@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.alarm.AlarmHistoryMapper">
+
+
+    <!--<insert >-->
+    <insert id="insert" parameterType="com.okay.testcenter.domain.AlarmHistory">
+      INSERT INTO alarm_history(id,taskId,errorType,serviceName,time,content,alarm)
+      values (#{id},#{taskId},#{errorType},#{serviceName},#{time},#{content},#{alarm})
+    </insert>
+
+
+    <!--<update>-->
+    <update id="update" parameterType="com.okay.testcenter.domain.AlarmHistory">
+        UPDATE alarm_history
+        SET taskId=#{taskId},errorType=#{errorType},serviceName=#{serviceName},time=#{time},content=#{content},alarm=#{alarm}
+        WHERE ID=#{id}
+    </update>
+
+    <!--<delete>-->
+    <delete id="delete" parameterType="int">
+        DELETE FROM alarm_history
+        WHERE id=#{0}
+    </delete>
+
+
+    <!--<findById>-->
+    <select id="findById" parameterType="int" resultType="com.okay.testcenter.domain.AlarmHistory">
+        SELECT *
+        from alarm_history
+        WHERE id=#{0}
+    </select>
+
+    <!--<findByTaskId>-->
+    <select id="findByTaskId" parameterType="int" resultType="com.okay.testcenter.domain.AlarmHistory">
+        SELECT *
+        from alarm_history
+        WHERE taskId=#{0}
+    </select>
+
+
+    <!--<list>-->
+    <select id="list" parameterType="com.okay.testcenter.domain.AlarmHistory"
+            resultType="com.okay.testcenter.domain.AlarmHistory">
+        SELECT *
+        FROM alarm_history
+        ORDER BY id DESC
+    </select>
+
+
+    <!--<getLastTaskId>-->
+    <select id="getLastTaskId" parameterType="Integer" resultType="java.lang.Integer">
+        SELECT taskId
+        from alarm_history
+        ORDER BY taskId DESC LIMIT 1
+    </select>
+
+</mapper>

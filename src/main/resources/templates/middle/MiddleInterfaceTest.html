@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        pre {
+            outline: 1px solid #ccc;
+            padding: 5px;
+            margin: 5px;
+        }
+
+        .string {
+            color: green;
+        }
+
+        .number {
+            color: darkorange;
+        }
+
+        .boolean {
+            color: blue;
+        }
+
+        .null {
+            color: magenta;
+        }
+
+        .key {
+            color: red;
+        }
+
+    </style>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/middle/middle.js}"></script>
+    <script type="text/javascript" th:src="@{/js/middle/middleInterfaceTest.js}"></script>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div id="reportlist" class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>middle</a></li>
+                <li class="breadcrumb-item active"><a>debug</a></li>
+            </ol>
+
+            <div class="row">
+                &nbsp&nbsp&nbsp&nbsp
+                <div>
+                    <select class="form-control" id="requestMethod" type="text" name="requestMethod"
+                            style="font-size:13px;height:40px;width:120px;background: #F5F5F5">
+                        <option><strong>Get</strong></option>
+                        <option><strong>Post-Json</strong></option>
+                        <option><strong>Post-Form</strong></option>
+                        <option><strong>Post-Text</strong></option>
+                        <option><strong>Post-Html</strong></option>
+                        <option><strong>Post-Xml</strong></option>
+                        <option><strong>Post-Binary</strong></option>
+
+                    </select>
+                </div>
+
+                <div>
+                    <input style="font-size:12px;height:40px;width:700px;background: #F5F5F5" class="form-control"
+                           id="requestUrl" type="text"
+                           name="requestUrl" placeholder="Enter request URL">
+                </div>
+                &nbsp&nbsp
+                <div>
+                    <button id="requestSend" class="btn btn-large btn-primary "
+                            style="font-size:16px;font-weight: 900;" onclick="sendMiddleRequest()">Send
+                    </button>
+                </div>
+                &nbsp&nbsp
+                <div>
+                    <button id="requestSave" class="btn btn-large btn-info " style="font-size:16px;font-weight: 900;">
+                        Save
+                    </button>
+                </div>
+
+            </div>
+            <hr>
+
+            <ul id="requestTab" class="nav nav-tabs" role="tablist">
+                <li class=" nav-link "><a href="#headers" data-toggle="tab" role="tab">Headers</a></li>
+                <li class=" nav-link "><a href="#cookies" data-toggle="tab" role="tab">Cookies</a></li>
+                <li class="nav-link"><a href="#params" data-toggle="tab" role="tab">Params</a></li>
+                <li class="nav-link"><a href="#body" data-toggle="tab" role="tab">Body</a></li>
+            </ul>
+            <div id="requestTabContent" class="tab-content">
+                <div class="col-md-9 tab-pane fade active" id="headers">
+                     <textarea id="headersContent" class="form-control" type="text" name="headersContent" rows="5"
+                               onpropertychange="this.style.posHeight=this.scrollHeight"
+                               placeholder="headers(key:value;)"></textarea>
+                </div>
+                <div class="col-md-9 tab-pane fade" id="cookies">
+                    <textarea id="cookiesContent" class="form-control" type="text" name="cookiesContent" rows="5"
+                              onpropertychange="this.style.posHeight=this.scrollHeight"
+                              placeholder="cookies(key=value;)"></textarea>
+                </div>
+                <div class="col-md-9 tab-pane fade" id="params">
+                     <textarea id="paramsContent" class="form-control" type="text" name="paramsContent" rows="5"
+                               onpropertychange="this.style.posHeight=this.scrollHeight"
+                               placeholder="params(key=value&)"></textarea>
+                </div>
+                <div class="col-md-9 tab-pane fade" id="body">
+                    <textarea id="bodyContent" class="form-control" type="text" name="bodyContent" rows="5"
+                              onpropertychange="this.style.posHeight=this.scrollHeight"
+                              placeholder="body(json)"></textarea>
+                </div>
+            </div>
+
+            <hr>
+            <ul id="responseTab" class="nav nav-tabs" role="tablist">
+                <li class="nav-link"><a href="#responseBody" data-toggle="tab" role="tab">responseBody</a></li>
+                <li class=" nav-link"><a href="#responseCookies" data-toggle="tab" role="tab">responseCookies</a></li>
+                <li class="nav-link"><a href="#responseHeaders" data-toggle="tab" role="tab">ResponseHeaders</a></li>
+
+            </ul>
+            <div id="responseTabContent" class="tab-content">
+                <div class="col-md-9 tab-pane fade" id="responseBody">
+                    <div id="responseBodyContent"></div>
+                </div>
+                <div class="tab-pane fade col-md-9 active" id="responseCookies">
+                    <div id="responseCookiesContent"></div>
+                </div>
+                <div class="tab-pane fade col-md-9" id="responseHeaders">
+                    <div id="responseHeadersContent"></div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+</body>
+
+
+</html>

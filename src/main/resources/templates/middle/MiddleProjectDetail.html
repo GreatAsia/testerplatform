@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/middle/middle.js}"></script>
+    <script type="text/javascript" th:src="@{/js/middle/middleProject.js}"></script>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>middle</a></li>
+                <li class="breadcrumb-item active"><a>project</a></li>
+                <li class="breadcrumb-item active"><a>detail</a></li>
+            </ol>
+
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed">
+                <tr class="th-inner">
+                    <td class="text-left text-info"
+                        th:text="ID + ':&nbsp&nbsp'+ ${middleProject.id}"></td>
+                </tr>
+                <tr class="th-inner">
+                    <td
+                            th:text="项目名称 + ':&nbsp&nbsp'+ ${middleProject.name}">
+                    </td>
+                </tr>
+                <tr class="th-inner">
+                    <td
+                            th:text="请求ID前缀 + ':&nbsp&nbsp'+ ${middleProject.requestPre}">
+                    </td>
+                </tr>
+                <tr class="th-inner">
+                    <td class="text-left text-info"
+                        th:text="运行类型 + ':&nbsp&nbsp'+ ${middleProject.runTypeName}"></td>
+                </tr>
+                <tr class="th-inner">
+                    <td class="text-left text-info"
+                        th:text="登录类型 + ':&nbsp&nbsp'+ ${middleProject.loginTypeName}"></td>
+                </tr>
+                <tr class="th-inner">
+                    <td class="text-left text-info"
+                        th:text="登录URL + ':&nbsp&nbsp'+ ${middleProject.loginUrl}"></td>
+                </tr>
+                <tr>
+                    <td class="text-left text-info"
+                        th:text="登录参数 + ':&nbsp&nbsp'+ ${middleProject.loginParam}" }></td>
+                </tr>
+                <tr class="th-inner">
+                    <td class="text-left text-info"
+                        th:text="秘钥URL + ':&nbsp&nbsp'+ ${middleProject.secretUrl}"></td>
+                </tr>
+
+            </table>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+</body>
+
+
+</html>

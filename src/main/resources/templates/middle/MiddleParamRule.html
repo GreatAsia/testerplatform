@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>接口生成规则</title>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/middle/middle.js}"></script>
+    <script type="text/javascript" th:src="@{/js/middle/middleModule.js}"></script>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>middle</a></li>
+                <li class="breadcrumb-item active"><a>case</a></li>
+            </ol>
+            <div class="row">
+                <div class="col-lg-5">
+                    <textarea style="width: 100%;min-height: 300px;" disabled
+                              th:text="${middleCase.request_data}" id="requestParams"></textarea>
+                </div>
+                <div class="col-lg-7">
+                    <table class="table   table-condensed " style="word-wrap:break-word;table-layout:fixed;" id="table">
+                        <thead>
+                        <tr>
+                            <th>变量名</th>
+                            <th>类型</th>
+                            <th>范围</th>
+                            <th>必填</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr name="analysisContent" th:each="middleCaseRule: ${middleCaseRules}">
+                            <td th:text="${middleCaseRule.fieldName}" name="fieldName">Tanmay</td>
+                            <td style="padding: 0px">
+                                <select name="fieldType" class="form-control" style="border: 0px">
+                                    <option value="0" th:selected="${middleCaseRule.getFieldType() eq 0}">String
+                                    </option>
+                                    <option value="1" th:selected="${middleCaseRule.getFieldType() eq 1}">number
+                                    </option>
+                                    <option value="2" th:selected="${middleCaseRule.getFieldType() eq 2}">node</option>
+                                    <option value="3" th:selected="${middleCaseRule.getFieldType() eq 3}">array</option>
+                                </select>
+                            </td>
+                            <td contentEditable="true" name="range" th:text="${middleCaseRule.range}">1-3</td>
+                            <td style="padding: 0px">
+                                <select class="form-control" style="border: 0px" name="required">
+                                    <option value="0" th:selected="${middleCaseRule.getRequired() eq 0}">否</option>
+                                    <option value="1" th:selected="${middleCaseRule.getRequired() eq 1}">是</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div style="float: right">
+                        <a href="javascript:void(0)"
+                           th:data-id="${middleCase.id}"
+                           class="btn btn-sm btn-info"
+                           onclick="testCaseGeneration(this)">生成并更新测试用例</a>
+                       <!-- <button class="btn  btn-sm btn-info "
+                                th:data-id="${middleCase.id}"
+                                th:data-env_id="${middleCase.env_id}"
+                                th:data-interface_id="${middleCase.interface_id}"
+                                th:data-caseType="${middleCase.caseType}"
+                                th:data-check_data="${middleCase.check_data}"
+                                th:data-module_id="${middleCase.module_id}"
+                                th:data-project_id="${middleCase.project_id}"
+                                onclick="showUpdateModule(this)" disabled="false">
+                            保存测试用例
+                        </button>-->
+                    </div>
+                </div>
+            </div>
+            <table class="table table-hover table-bordered table-condensed  "
+                   style="word-break:break-all;word-wrap:break-all;table-layout:fixed;">
+                <thead class="thead-light">
+                <tr>
+                    <th>用例名称</th>
+                    <th width="30%">请求数据</th>
+                    <th>验证数据</th>
+                    <th>用例类型</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function testCaseGeneration(obj) {
+        var ruleParams = [];
+
+        $("#table tbody tr").each(function (i, obj) {
+            var param = {}
+            param["fieldName"] = $(obj).find("td[name='fieldName']").text()
+            param["fieldType"] = $(obj).find("select[name='fieldType']  option:selected").val()
+            param["range"] = $(obj).find("td[name='range']").text()
+            param["required"] = $(obj).find("select[name='required']  option:selected").val()
+            ruleParams.push(param)
+        });
+
+        $.ajax({
+            type: "post",
+            url: "/middle/param/autoCaseGen",
+            dataType: "json",
+            data: "middleCaseRules="+JSON.stringify(ruleParams)+"&id="+$(obj).attr("data-id"),
+            timeout: 60000,
+            success: function (data) {
+
+                $("#tbody").html(content(data));
+            },
+            error: function (e) {
+                alert("fail:" + JSON.stringify(e));
+            }
+        })
+    }
+    function content(middleCase) {
+
+        var contents = "";
+
+        for (var i = 0; i < middleCase.length; i++) {
+
+            var caseType;
+
+            if(middleCase[i].caseType == 0){
+                caseType = "监控";
+            }else {
+                caseType = "手动";
+            }
+
+
+            contents += "<tr>" +
+                "                    <td>" + middleCase[i].name + "</td>\n" +
+                "                    <td>" + middleCase[i].request_data + "</td>\n" +
+                "                    <td>" + middleCase[i].check_data + "</td>\n" +
+                "                    <td>" + caseType + "</td>\n" +
+                "</tr>"
+
+        }
+
+        return contents;
+
+
+    }
+
+</script>
+</html>

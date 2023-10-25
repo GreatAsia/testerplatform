@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.ui.UiPadCaseListMapper">
+
+
+    <!--<insertUiPadCaseList >-->
+    <insert id="insertUiPadCaseList" parameterType="com.okay.testcenter.domain.report.UiPadCaseList">
+      INSERT INTO ui_pad_caselist(ID,RUNID,SERIALNO,CASENAME,CASEDESC,RESULT,STARTTIME,ELAPSEDTIME,ERRORLOG,CASEMODULE,PICTUREPATH,TESTLOGPATH)
+      values (#{id},#{runId},#{serialno},#{caseName},#{caseDesc},#{result},#{startTime},#{elapsedTime},#{errorLog},#{caseModule},#{picturePath},#{testLogPath})
+    </insert>
+
+
+    <!--<updateUiPadCaseList>-->
+    <update id="updateUiPadCaseList" parameterType="com.okay.testcenter.domain.report.UiPadCaseList">
+        UPDATE ui_pad_caselist
+        SET RUNID=#{runId},SERIALNO=#{serialno},CASENAME=#{caseName},CASEDESC=#{caseDesc},RESULT=#{result},STARTTIME=#{startTime},ELAPSEDTIME=#{elapsedTime},ERRORLOG=#{errorLog},CASEMODULE=#{caseModule},PICTUREPATH=#{picturePath},TESTLOGPATH=#{testLogPath}
+        WHERE ID=#{id}
+    </update>
+
+
+    <!--<deleterUiPadCaseList>-->
+    <delete id="deleterUiPadCaseList" parameterType="int">
+        DELETE FROM ui_pad_caselist
+        WHERE ID=#{0}
+    </delete>
+
+    <!--<findUiPadCaseListById>-->
+    <select id="findUiPadCaseListById" parameterType="int"
+            resultType="com.okay.testcenter.domain.report.UiPadCaseList">
+        SELECT *
+        FROM ui_pad_caselist
+        WHERE ID=#{0}
+    </select>
+
+
+    <!--<findUiPadCaseListByRunId>-->
+    <select id="findUiPadCaseListByRunId" parameterType="com.okay.testcenter.domain.report.UiPadCaseList"
+            resultType="com.okay.testcenter.domain.report.UiPadCaseList">
+        SELECT runId,caseDesc,caseModule,MIN(result) AS caseResult
+        FROM ui_pad_caselist
+        WHERE RUNID=#{id}
+        GROUP BY caseDesc
+    </select>
+
+    <!--findUiPadCaseListBySerialno-->
+    <select id="findUiPadCaseListBySerialno" parameterType="com.okay.testcenter.domain.report.UiPadCaseList"
+            resultType="com.okay.testcenter.domain.report.UiPadCaseList">
+        SELECT *
+        FROM ui_pad_caselist
+        WHERE SERIALNO LIKE #{serialno}
+        ORDER BY result
+    </select>
+
+    <!--findUiPadCaseList-->
+    <select id="findUiPadCaseList" parameterType="com.okay.testcenter.domain.report.UiPadCaseList"
+            resultType="com.okay.testcenter.domain.report.UiPadCaseList">
+        SELECT *
+        FROM ui_pad_caselist
+        ORDER BY id DESC
+    </select>
+
+
+    <!--findUiPadCaseListByRunIdAndSerialno-->
+    <select id="findUiPadCaseListByRunIdAndSerialno" parameterType="com.okay.testcenter.domain.report.UiPadCaseList"
+            resultType="com.okay.testcenter.domain.report.UiPadCaseList">
+        SELECT *
+        FROM ui_pad_caselist
+        WHERE RUNID=#{param1} AND SERIALNO LIKE #{param2}
+        ORDER BY result
+    </select>
+
+
+</mapper>

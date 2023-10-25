@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+<div class="container-fluid">
+    <div>
+        <div class="row">
+            <div class="col-md-2">
+                <nav th:replace="html/mainfragment :: letf_nav"></nav>
+            </div>
+            <div class="col-md-10">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                    <li class="breadcrumb-item "><a>WebUi</a></li>
+                    <li class="breadcrumb-item "><a herf="/WebUi/report/list">report</a></li>
+                    <li class="breadcrumb-item "><a>reportDesc</a></li>
+                    <li class="breadcrumb-item active"><a>list</a></li>
+                </ol>
+                <div class="col-md-10 row">
+                    <div>
+                        <input class="form-control" id="sendTo" type="text" name="sendTo"
+                               style="height:35px;width:600px" placeholder="收件人">
+                    </div>
+                    <div>
+                        &nbsp&nbsp
+                        <button id="sendEmail" onclick="sendEmail()" class="btn btn-info">发送报告</button>
+                    </div>
+                </div>
+                <div class="form-inline col-md-5">
+
+                    <h7 class="text-left"><strong>报告汇总</strong></h7>
+                    <hr>
+                    <table class="table table-hover table-bordered table-condensed">
+                        <tr class="th-inner">
+                            <td
+                                    th:class="${webReport.failCaseCount eq 0} ? 'text-left text-info' : 'text-left text-danger'"
+                                    th:text="测试结果 + ':&nbsp&nbsp'+ (${webReport.failCaseCount eq 0} ?'成功':'失败')">
+                            </td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="用例总数 + ':&nbsp&nbsp'+ ${webReport.allCaseCount}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="通过数量 + ':&nbsp&nbsp'+ (${webReport.allCaseCount}-${webReport.failCaseCount})"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-danger"
+                                th:text="失败数量 + ':&nbsp&nbsp'+ ${webReport.failCaseCount}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="测试项目 + ':&nbsp&nbsp'+ ${webReport.projectNames}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="开始时间 + ':&nbsp&nbsp'+ ${webReport.startTime}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="结束时间 + ':&nbsp&nbsp'+ ${webReport.endTime}"></td>
+                        </tr>
+                    </table>
+                </div>
+
+
+                <table class="table table-hover table-bordered table-condensed align-middle ">
+                    <thead class="thead-light">
+                    <tr>
+                        <th style="width: 5%">ID</th>
+                        <th>用例名称</th>
+                        <th>url</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>截图</th>
+                        <th>案例执行状态</th>
+                        <th>错误信息</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    <tr th:each="webReportDesc : ${webReportDescs}">
+                        <td th:text="${webReportDesc.id}" style="width: 10%"></td>
+                        <td th:text="${webReportDesc.caseName}"></td>
+                        <td th:text="${webReportDesc.url}"></td>
+                        <td th:text="${webReportDesc.startTime}"></td>
+                        <td th:text="${webReportDesc.endTime}"></td>
+                        <td  style="width: 10%"><img th:if="${webReportDesc.status} eq '3'" th:src="@{${webReportDesc.shotPic}}"
+                                 onmouseover="this.style.cursor='pointer';this.style.cursor='hand'"
+                                 onclick="javascript:showImage(this);" style="vertical-align:middle;width: 100%"/>
+                            <img th:if="${webReportDesc.status} ne '3'" src="/image/unexecutedCase.jpg"
+                                 onmouseover="this.style.cursor='pointer';this.style.cursor='hand'"
+                                 onclick="javascript:showImage(this);" style="vertical-align:middle;width: 100%"/></td>
+                        <td th:text="${webReportDesc.status} eq '2'?'通过':'失败'"></td>
+                        <td th:text="${webReportDesc.errorMsg}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav id="switchPage" aria-label="Page navigation example" th:if="${pageInfo.total}>0">
+                    <ul class="pagination justify-content-center">
+
+                        <li class="page-item"><a class="page-link" id="homePage"
+                                                 th:href="'/WebUi/reportDesc/list?'+'id='+${webReport.getId()}"
+                                                 target="_self">首页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasPreviousPage}==true"><a class="page-link"
+                                                                                           id="previousPage"
+                                                                                           th:href="'/WebUi/reportDesc/list?currentPage='+${pageInfo.prePage}+'&id='+${webReport.getId()}">上一页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasNextPage}==true"><a class="page-link" id="nextPage"
+                                                                                       th:href="'/WebUi/reportDesc/list?currentPage='+${pageInfo.nextPage}+'&id='+${webReport.getId()}">下一页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="lastPage"
+                                                 th:href="'/WebUi/reportDesc/list?currentPage='+${pageInfo.pages}+'&id='+${webReport.getId()}">末页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="currentPage"
+                                                 th:text="第+${pageInfo.pageNum}+页"></a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="totalPage" th:text="共+${pageInfo.pages}+ 页"> </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    $(function () {
+        document.getElementById("collapseSix").className = "collapse show";
+    })
+
+    //显示大图
+    function showImage(source) {
+        src = source.getAttribute("src");
+        $("#ShowImage_Form").find("#img_show").html("<image src='" + src + "' class='carousel-inner img-responsive img-rounded' />");
+        $("#ShowImage_Form").modal();
+    }
+
+
+    function sendEmail() {
+        var webReportId= [[${webReport.id}]];
+        requestJSON={};
+        requestJSON["webReportId"]=webReportId
+        requestJSON["sendTo"]=$("#sendTo").val()
+        console.log(requestJSON)
+        $.ajax({
+            url:"/WebUi/sendEmail",
+            type:"POST",
+            dataType:"JSON",
+            contentType: 'application/json',
+            data:JSON.stringify(requestJSON),
+            success:function (data) {
+                if(data.code!=200){
+                    alert("邮件发送失败")
+                }else{
+                    alert("邮件发送成功")
+                }
+            },
+            error:function () {
+                alert("服务异常")
+            }
+        })
+    }
+</script>
+</html>

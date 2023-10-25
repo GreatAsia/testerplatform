@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/tool/server.js}"></script>
+
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>tool</a></li>
+                <li class="breadcrumb-item active"><a>server</a></li>
+            </ol>
+
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>环境</th>
+                    <th>地址</th>
+                    <th>路径</th>
+                    <th>操作</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="dev" th:text="dev"></td>
+                    <td>
+                        <input  value="10.10.0.195:2181" id="devHost">
+                    </td>
+                    <td>
+                        <input  value="/xdfapp" id="devPath">
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-info" onclick="getDevList()" id="devDo">获取所有节点</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td id="hotfix" th:text="hotfix"></td>
+                    <td>
+                        <input  value="10.10.1.7:2181" id="hotfixHost">
+                    </td>
+                    <td>
+                        <input  value="/xdfapp" id="hotfixPath">
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-info" onclick="getHotfixList()" id="hotfixDo">获取所有节点</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td id="stress" th:text="stress"></td>
+                    <td>
+                        <input  value="10.10.0.193:2181" id="stressHost">
+                    </td>
+                    <td>
+                        <input  value="/xdfapp" id="stressPath">
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-info" onclick="getStressList()" id="stressDo">获取所有节点</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>环境</th>
+                    <th>地址</th>
+                    <th>路径</th>
+                    <th>搜索内容</th>
+                    <th>操作</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="devSearch" th:text="dev"></td>
+                    <td>
+                        <input  value="10.10.0.195:2181" id="devHostSearch">
+                    </td>
+                    <td>
+                        <input  value="/xdfapp" id="devPathSearch">
+                    </td>
+                    <td>
+                        <input  value="mysql-dev.wf" id="devContentSearch">
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-info" onclick="getDevSearchList()" id="devDoSearch">搜索节点服务</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td id="hotfixSearch" th:text="hotfix"></td>
+
+                    <td>
+                        <input value="10.10.1.7:2181" id="hotfixHostSearch">
+                    </td>
+                    <td>
+                        <input value="/xdfapp" id="hotfixPathSearch">
+                    </td>
+                    <td>
+                        <input  value="mysql-hotfix.wf" id="hotfixContentSearch">
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-info" onclick="getHotfixSearchList()" id="hotfixDoSearch">搜索节点服务</a>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td id="stressSearch" th:text="stress"></td>
+
+                    <td>
+                        <input  value="10.10.0.193:2181" id="stressHostSearch">
+                    </td>
+                    <td>
+                        <input  value="/xdfapp" id="stressPathSearch">
+                    </td>
+                    <td>
+                        <input value="mysql-hotfix.wf" id="stressContentSearch">
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-info" onclick="getStressSearchList()" id="stressDoSearch">搜索节点服务</a>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+<!--获取ZK列表结果的模态框-->
+<div class="modal fade" id="zkList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">ZK服务列表</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div id="result">
+
+            </div>
+            <div class="modal-body" style="float:left;width:100%;">
+                <textarea style="width:100%;" type="text" rows="10" th:width="10" th:text="..." readonly="readonly"
+                          id="respose"></textarea>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-sm btn-primary" data-dismiss="modal">关闭</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("input").css("background", "rgba(255,255,255,0.1)");
+    $("input").css("height", "35px");
+    $("input").css("width", "300");
+    $("input").css("overflow", "auto");
+</script>
+</body>
+
+
+</html>

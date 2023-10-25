@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/middle/middle.js}"></script>
+    <script type="text/javascript" th:src="@{/js/middle/middleInterfaceCaseSync.js}"></script>
+</head>
+<body>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>middle</a></li>
+                <li class="breadcrumb-item "><a>case</a></li>
+                <li class="breadcrumb-item active"><a>sync</a></li>
+            </ol>
+
+            <div class="row">
+                <!-- 按钮触发模态框 -->
+                &nbsp&nbsp
+                <div>
+                    <label class="form-inline"><font size="4"></font>
+                        <select style="height:35px;width:400px" class="form-control " id="ProjectId">
+                            <option th:each="list:${middleProjectList}" th:value="${list.id}"
+                                    th:text="${list.name }"></option>
+                        </select>
+                    </label>
+
+                </div>
+                &nbsp&nbsp
+                <div>
+                    <label class="form-inline"><font size="4"></font>
+                        <select style="height:35px;width:100px" class="form-control " id="FromEnv">
+                            <option th:each="list:${envList}" th:value="${list.id}"
+                                    th:text="${list.name }"></option>
+                        </select>
+                    </label>
+
+                </div>
+                &nbsp&nbsp
+                <div class="button btn-sm btn-light">同步到</div>
+                <!-- 按钮触发模态框 -->
+                &nbsp&nbsp
+                <div>
+                    <label class="form-inline"><font size="4"></font>
+                        <select style="height:35px;width:100px" class="form-control " id="ToEnv">
+                            <option th:each="list:${envList}" th:value="${list.id}"
+                                    th:text="${list.name }"></option>
+                        </select>
+                    </label>
+
+                </div>
+                &nbsp&nbsp
+                <div>
+                    <a href="javascript:void(0)" class="btn btn-sm btn-success "
+                       onclick="syncData()">同步数据</a>
+                </div>
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <div class="text-danger">往线上同步用例前把定时任务关掉!!!</div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+
+
+</html>

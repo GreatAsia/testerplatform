@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/performance/serialnoList.js}"></script>
+    <script type="text/javascript" th:src="@{/js/performance/performance.js}"></script>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar_search('请输入序列号')"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div id="reportlist" class="col-md-10">
+            <ol class="breadcrumb">
+
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item active"><a>serialnolist</a></li>
+
+            </ol>
+
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>序列号</th>
+                    <th>历史记录</th>
+                    <th>编辑</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr th:each="serialnos: ${serialnoList.list}">
+                    <td th:text="${serialnos.serialno}"></td>
+                    <td>
+                        <a th:href="@{'/performance/pad/serialnoInfo/' + ${serialnos.serialno}}">运行记录</a>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" th:data-id="${serialnos.serialno}" class="btn btn-sm btn-danger"
+                           onclick="showDeleteInterface(this)">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            <nav th:id="switchPageModel"
+                 th:replace="html/mainfragment :: switchPageInfo(${serialnoList})">
+            </nav>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+<!--删除确认模态框-->
+<div th:replace="html/mainfragment :: deleteModal"></div>
+
+
+<script>
+    $("input").css("background", "rgba(255,255,255,0.1)");
+    $("input").css("height", "35px");
+    $("input").css("width", "400");
+    $("input").css("overflow", "auto");
+</script>
+
+</body>
+
+
+</html>

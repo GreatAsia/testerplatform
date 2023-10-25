@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.webUi.WebCaseMapper">
+    <resultMap id="BaseResultMap" type="com.okay.testcenter.domain.ui.WebCase">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="platform_id" jdbcType="INTEGER" property="platformId"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="case_desc" jdbcType="VARCHAR" property="caseDesc"/>
+        <result column="screenshot" jdbcType="VARCHAR" property="screenshot"/>
+        <result column="case_step" jdbcType="CLOB" property="caseStep"/>
+        <result column="is_delete" jdbcType="CHAR" property="isDelete"/>
+        <result column="test_status" jdbcType="CHAR" property="testStatus"/>
+        <result column="need_login" jdbcType="CHAR" property="needLogin"/>
+        <collection property="webPlatform" ofType="com.okay.testcenter.domain.ui.WebPlatform" column="platform_id">
+            <id column="platform_id" jdbcType="INTEGER" property="id"/>
+            <id column="platform_name" jdbcType="VARCHAR" property="platformName"/>
+            <id column="login_url" jdbcType="VARCHAR" property="loginUrl"/>
+            <id column="login_params" jdbcType="CLOB" property="loginParams"/>
+            <id column="request_type" jdbcType="CHAR" property="requestType"/>
+            <id column="body_type" jdbcType="CHAR" property="bodyType"/>
+            <id column="is_delete" jdbcType="CHAR" property="isDelete"/>
+
+        </collection>
+    </resultMap>
+    <sql id="Base_WebCase_Column_List">
+    c.id, c.platform_id, c.url, c.case_desc, c.screenshot, c.case_step, c.is_delete, c.test_status,
+    c.need_login
+  </sql>
+
+    <sql id="Base_WebPlatform_Column_List">
+    p.id, p.platform_name, p.login_url, p.login_params, p.request_type, p.body_type,p.is_delete
+  </sql>
+    <update id="updateTestStatusOrScreenshot">
+        update web_case
+        <trim prefix="set" suffixOverrides=",">
+            <if test="testStatus != null and testStatus !=''">
+                test_status = #{testStatus,jdbcType=CHAR},
+            </if>
+            screenshot = #{screenshot,jdbcType=VARCHAR}
+        </trim>
+        where id=#{id,jdbcType=INTEGER}
+    </update>
+
+
+    <update id="updateWebCases" parameterType="list">
+        update web_case
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="test_status =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.testStatus!=null">
+                        when id=#{item.id}
+                        then #{item.testStatus}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="screenshot =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id}
+                    then #{item.screenshot}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteCase">
+        update web_case set
+        is_delete=1
+        where id=#{id,jdbcType=INTEGER}
+    </delete>
+
+
+    <select id="getWebCaseList" resultType="com.okay.testcenter.domain.ui.WebCase" resultMap="BaseResultMap">
+        select<include refid="Base_WebCase_Column_List"/>,
+        <include refid="Base_WebPlatform_Column_List"/>
+        from web_case as c left join web_platform as p
+        on c.platform_id=p.id
+        where c.is_delete = 0 and p.is_delete=0
+        <if test="id != null and id !=''">
+            and c.id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="platformId != null and platformId !=''">
+            and c.platform_id = #{platformId,jdbcType=INTEGER}
+        </if>
+        <if test="url != null and url !=''">
+            and c.url = #{url,jdbcType=VARCHAR}
+        </if>
+        <if test="caseDesc != null and caseDesc !=''">
+            and c.case_desc = #{caseDesc,jdbcType=VARCHAR}
+        </if>
+        <if test="screenshot != null and screenshot !=''">
+            and c.screenshot = #{screenshot,jdbcType=VARCHAR}
+        </if>
+        <if test="caseStep != null and caseStep !=''">
+            and c.case_step = #{caseStep,jdbcType=VARCHAR}
+        </if>
+        <if test="testStatus != null and testStatus !=''">
+            and c.test_status = #{testStatus,jdbcType=CHAR}
+        </if>
+        <if test="needLogin != null and needLogin !=''">
+            and c.need_login = #{needLogin,jdbcType=CHAR}
+        </if>
+    </select>
+    <select id="getWebCaseById" resultType="com.okay.testcenter.domain.ui.WebCase" resultMap="BaseResultMap">
+        select<include refid="Base_WebCase_Column_List"/>,
+        <include refid="Base_WebPlatform_Column_List"/>
+        from web_case as c left join web_platform as p
+        on c.platform_id=p.id
+        where c.is_delete = 0 and p.is_delete=0
+        <if test="id != null and id !=''">
+            and c.id = #{id,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <insert id="addWebCase" parameterType="com.okay.testcenter.domain.ui.WebCase">
+        <choose>
+            <when test="id != null and id !=''">
+                update web_case set
+                platform_id=#{platformId,jdbcType=INTEGER},
+                url=#{url,jdbcType=VARCHAR},
+                case_desc=#{caseDesc,jdbcType=VARCHAR},
+                case_step=#{caseStep,jdbcType=VARCHAR},
+                need_login=#{needLogin,jdbcType=CHAR}
+                where id = #{id,jdbcType=INTEGER}
+            </when>
+            <otherwise>
+                INSERT INTO web_case (platform_id,url,case_desc,case_step,need_login)
+                VALUES
+                (#{platformId,jdbcType=INTEGER},#{url,jdbcType=VARCHAR},#{caseDesc,jdbcType=VARCHAR},#{caseStep,jdbcType=VARCHAR},#{needLogin,jdbcType=CHAR})
+            </otherwise>
+        </choose>
+    </insert>
+</mapper>

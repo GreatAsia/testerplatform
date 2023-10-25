@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/webUI/webUiCaseList.js}"></script>
+    <script type="text/javascript" th:src="@{/js/autoui/autoUi.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/webUI/WebUiCaseList.css}" media="screen">
+    <script type="text/javascript" th:src="@{/js/toastr.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/toastr.min.css}" media="screen">
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>ui</a></li>
+                <li class="breadcrumb-item "><a>web</a></li>
+                <li class="breadcrumb-item active"><a>list</a></li>
+            </ol>
+            <div class="row" style="margin: 0px">
+                <!-- 按钮触发模态框 -->
+                <div class="col-lg-4">
+                    <a href="/ui/addUiCase" class="btn btn-sm btn-primary " style="margin-bottom: 10px">
+                        <!--onclick="showAddModal()">-->添加用例</a>&nbsp&nbsp&nbsp&nbsp
+                    <a href="/ui/getWebPlatformByPage" class="btn btn-sm btn-primary " style="margin-bottom: 10px">
+                        <!--onclick="showAddModal()">-->添加平台</a>
+                </div>
+                <div class="col-lg-8 row">
+                    <div class="input col-lg-3" style="margin-left: 8%">
+                        <select class=" select form-control " data-valtype="option" name="platformId"
+                                id="platformId">
+                            <option value=0>选择平台</option>
+                            <option th:each="dict : ${platforms}" th:value="${dict.id}"
+                                    th:text="${dict.platformName}"
+                                    th:selected="${dict.id eq params.platformId}"></option>
+                        </select>
+                    </div><!-- /input-group -->
+                    <div class="input col-lg-3">
+                        <input type="text" class="form-control" placeholder="案例描述" name="caseDesc"
+                               id="caseDesc" th:value="${params.caseDesc}">
+                    </div>
+                    <div class="input col-lg-3">
+                        <select class=" select form-control " data-valtype="option" name="testStatus"
+                                id="testStatus">
+                            <option value=-1>测试状态</option>
+                            <option value=0 th:selected="${params.testStatus+'' eq '0'}">未测试</option>
+                            <option value=1 th:selected="${params.testStatus+'' eq '1'}">测试中</option>
+                            <option value=2 th:selected="${params.testStatus+'' eq '2'}">测试通过</option>
+                            <option value=3 th:selected="${params.testStatus+'' eq '3'}">测试未通过</option>
+                        </select>
+                    </div>
+                    <div class="input col-lg-1">
+                        <button class="btn btn-primary" onclick="selectCaseList()">查询</button>
+                    </div>
+                    <div class="input col-lg-1">
+                        <button href="/ui/addUiCase" class="btn  btn-primary" onclick="showExcuteModal()">执行</button>
+                    </div>
+                </div>
+            </div><!-- /.row -->
+
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th style="width: 5%">ID</th>
+                    <th style="width: 20%">平台</th>
+                    <th style="width: 30%">用例描述</th>
+                    <th style="width: 10%">案例执行状态</th>
+                    <th style="width: 15%">截图</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr th:each="case: ${pageInfo.list}">
+                    <td th:text="${case.id}" style="vertical-align:middle;"></td>
+                    <td th:text="${case.webPlatform.platformName}" style="vertical-align:middle;"></td>
+                    <td th:text="${case.caseDesc}" style="vertical-align:middle;"></td>
+                    <td style="vertical-align:middle;">
+                        <span th:if="${case.testStatus} eq '0'"
+                              style="background: grey;padding: 3px;border-radius: 4px;">未测试</span>
+                        <span th:if="${case.testStatus} eq '1'"
+                              style="background: #0eb3a8;padding: 3px;border-radius: 4px;">测试中<img src="/image/wait.gif"
+                                                                                                   style="width: 9%;"></span>
+                        <span th:if="${case.testStatus} eq '2'"
+                              style="background: green;padding: 3px;border-radius: 4px;">测试通过</span>
+                        <span th:if="${case.testStatus} eq '3'"
+                              style="background: #bd2130;padding: 3px;border-radius: 4px;">测试未通过</span>
+                    </td>
+                    <td>
+                        <img th:if="${case.testStatus} eq '3'" th:src="@{${case.screenshot}}"
+                             onmouseover="this.style.cursor='pointer';this.style.cursor='hand'" ``
+                             onclick="javascript:showImage(this);" style="vertical-align:middle;"/>
+                        <img th:if="${case.testStatus} ne '3'" src="/image/unexecutedCase.jpg"
+                             onmouseover="this.style.cursor='pointer';this.style.cursor='hand'"
+                             onclick="javascript:showImage(this);" style="vertical-align:middle;"/></td>
+                    <td style="vertical-align:middle;">
+                        <a href="javascript:void(0)" th:if="${case.testStatus} ne'1'" th:data-id="${case.id}"
+                           class="btn  btn-sm btn-info "
+                           onclick="showExcuteModalSingle(this)">执行</a>
+
+                        <a th:href="@{/ui/update(id=${case.id})}" th:data-id="${case.id}"
+                           th:if="${case.testStatus} ne'1'"
+                           class="btn  btn-sm btn-info ">修改</a>
+                        <a href="javascript:void(0)" th:if="${case.testStatus} ne'1'" th:data-id="${case.id}"
+                           class="btn btn-sm btn-danger"
+                           onclick="showDeleteModal(this)">删除</a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <nav id="switchPage" aria-label="Page navigation example" th:if="${pageInfo.total}>0">
+                <ul class="pagination justify-content-center">
+
+                    <li class="page-item"><a class="page-link" id="homePage"
+                                             th:href="'/ui/webUiCaseList?platformId='+(${params.platformId} eq null?'':${params.platformId})+'&caseDesc='+(${params.caseDesc} eq null?'':${params.caseDesc})+'&testStatus='+(${params.testStatus} eq null?'':${params.testStatus})"
+                                             target="_self">首页</a>
+                    </li>
+                    <li class="page-item" th:if="${pageInfo.hasPreviousPage}==true"><a class="page-link"
+                                                                                       id="previousPage"
+                                                                                       th:href="'/ui/webUiCaseList?currentPage='+${pageInfo.prePage}+'&platformId'+(${params.platformId} eq null?'':${params.platformId})+'&caseDesc='+(${params.caseDesc} eq null?'':${params.caseDesc})+'&testStatus='+(${params.testStatus} eq null?'':${params.testStatus})">上一页</a>
+                    </li>
+                    <li class="page-item" th:if="${pageInfo.hasNextPage}==true"><a class="page-link" id="nextPage"
+                                                                                   th:href="'/ui/webUiCaseList?currentPage='+${pageInfo.nextPage}+'&platformId'+(${params.platformId} eq null?'':${params.platformId})+'&caseDesc='+(${params.caseDesc} eq null?'':${params.caseDesc})+'&testStatus='+(${params.testStatus} eq null?'':${params.testStatus})">下一页</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" id="lastPage"
+                                             th:href="'/ui/webUiCaseList?currentPage='+${pageInfo.pages}+'&platformId'+(${params.platformId} eq null?'':${params.platformId})+'&caseDesc='+(${params.caseDesc} eq null?'':${params.caseDesc})+'&testStatus='+(${params.testStatus} eq null?'':${params.testStatus})">末页</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" id="currentPage" th:text="第+${pageInfo.pageNum}+页"></a>
+                    </li>
+                    <li class="page-item"><a class="page-link" id="totalPage" th:text="共+${pageInfo.pages}+ 页"> </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+</div>
+
+
+﻿<!--显示图片-->
+<div id="ShowImage_Form" class="modal hide" style="width: 30%; margin: auto;">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+        </button>
+    </div>
+    <div class="modal-body">
+        <div id="img_show">
+        </div>
+    </div>
+</div>
+<div th:replace="html/mainfragment :: deleteModal"></div>
+<div th:replace="html/mainfragment :: excuteModal"></div>
+</body>
+</html>

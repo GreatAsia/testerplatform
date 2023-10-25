@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.webUi.WebCasePlatformMapper">
+    <resultMap id="BaseResultMap" type="com.okay.testcenter.domain.ui.WebPlatform">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="platform_name" jdbcType="VARCHAR" property="platformName"/>
+        <id column="login_url" jdbcType="VARCHAR" property="loginUrl"/>
+        <id column="login_params" jdbcType="CLOB" property="loginParams"/>
+        <id column="request_type" jdbcType="CHAR" property="requestType"/>
+        <id column="body_type" jdbcType="CHAR" property="bodyType"/>
+        <id column="is_delete" jdbcType="CHAR" property="isDelete"/>
+    </resultMap>
+
+    <sql id="Base_WebPlatform_Column_List">
+        p.id, p.platform_name, p.login_url, p.login_params, p.request_type, p.body_type,p.is_delete
+    </sql>
+
+    <select id="getPlatformById" resultMap="BaseResultMap" parameterType="int">
+        select
+        <include refid="Base_WebPlatform_Column_List"/>
+        from web_platform p
+        where 1=1
+        <if test="id != null and id !=''">
+            and p.id=#{id}
+        </if>
+    </select>
+</mapper>

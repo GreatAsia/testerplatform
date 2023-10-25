@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/monitor/monitor.js}"></script>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>monitor</a></li>
+                <li class="breadcrumb-item active"><a>env</a></li>
+            </ol>
+
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>环境</th>
+                    <th>地址</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="dev_env" th:text="dev"></td>
+                    <td>
+                        <a id="dev_host" href="https://rancher.xk12.cn/k8s/clusters/c-r6wcz/api/v1/namespaces/cattle-prometheus/services/http:access-grafana:80/proxy/d/kZdoIYxik/deployment?orgId=1&var-deployment_namespace=dev&var-deployment_name=euler-svr" target="_blank" th:text="点击查看"></a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td id="qa_env" th:text="qa"></td>
+
+                    <td>
+                        <a id="qa_host" href="https://rancher.xk12.cn/k8s/clusters/c-r6wcz/api/v1/namespaces/cattle-prometheus/services/http:access-grafana:80/proxy/d/kZdoIYxik/deployment?orgId=1&var-deployment_namespace=qa&var-deployment_name=qa-platform" target="_blank" th:text="点击查看"></a>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td id="stress_env" th:text="stress"></td>
+
+                    <td>
+                        <a id="stress_host" href="https://rancher.xk12.cn/k8s/clusters/c-r6wcz/api/v1/namespaces/cattle-prometheus/services/http:access-grafana:80/proxy/d/kZdoIYxik/deployment?orgId=1&var-deployment_namespace=stress&var-deployment_name=euler-svr" target="_blank" th:text="点击查看"></a>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+</body>
+
+
+</html>

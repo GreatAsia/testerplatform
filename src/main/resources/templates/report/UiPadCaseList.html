@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/report/report.js}"></script>
+    <script type="text/javascript" th:src="@{/js/report/uiPadCaseList.js}"></script>
+</head>
+<body>
+
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div id="reportlist" class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>report</a></li>
+                <li class="breadcrumb-item "><a href="/uiPad/report/list">ui</a></li>
+                <li class="breadcrumb-item "><a>serialnolist</a></li>
+                <li class="breadcrumb-item active"><a>detail</a></li>
+
+            </ol>
+            <hr>
+            <div class="row">
+                <div class="form-inline col-md-5">
+
+                    <h7 class="text-left"><strong>报告汇总</strong></h7>
+                    <hr>
+                    <table class="table table-hover table-bordered table-condensed">
+                        <tr class="th-inner">
+                            <td class="text-left text-success"
+                                th:text="运行ID + ':&nbsp&nbsp'+ ${uiPadSerialnoLists.runId}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-success"
+                                th:text="序列号 + ':&nbsp&nbsp'+ ${uiPadSerialnoLists.serialno}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-success"
+                                th:text="用例总数 + ':&nbsp&nbsp'+ ${uiPadSerialnoLists.totalCase}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left  text-success"
+                                th:text="通过用例 + ':&nbsp&nbsp'+ ${uiPadSerialnoLists.passCase}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left  text-danger"
+                                th:text="失败用例 + ':&nbsp&nbsp'+ ${uiPadSerialnoLists.failCase}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-warning"
+                                th:text="错误用例 + ':&nbsp&nbsp'+ ${uiPadSerialnoLists.errorCase}"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-left text-success"
+                                th:text="测试耗时 + ':&nbsp&nbsp'+ ${uiPadSerialnoLists.elapsedTime}" }></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-success"
+                                th:text="开始时间 + ':&nbsp&nbsp'+ ${uiPadSerialnoLists.startTime}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td
+                                th:class="${uiPadSerialnoLists.passRate eq ('100.00%')} ? 'text-left text-success' : 'text-left text-danger'"
+                                th:text="通过率+ ':&nbsp&nbsp'+ ${uiPadSerialnoLists.passRate}"></td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div class="form-inline col-md-5" id="uiPadReport" style="width: 320px;height:320px;"></div>
+
+            </div>
+            <hr>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p>
+
+            <h7 class="text-left"><strong>详细数据</strong></h7>
+            <hr>
+            <table class=" table table-hover table-bordered table-condensed  ">
+                <thead class="thead-light">
+                <tr>
+                    <th>用例ID</th>
+                    <th>用例名称</th>
+                    <th>用例描述</th>
+                    <th>测试结果</th>
+                    <th>测试耗时</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="uiPadCase: ${uiPadCaseLists}">
+                    <td th:text="${uiPadCase.id}"></td>
+                    <td th:text="${uiPadCase.caseName}"></td>
+                    <td th:text="${uiPadCase.caseDesc}"></td>
+                    <td th:text="${uiPadCase.result}"
+                        th:class="${uiPadCase.result eq ('true')} ?  'text-left text-success' : 'text-left text-danger'"></td>
+                    <td th:text="${uiPadCase.elapsedTime}"></td>
+                    <td>
+                        <button href="javascript:void(0)" th:data-log="${uiPadCase.errorLog}"
+                           th:class="${#strings.isEmpty(uiPadCase.errorLog)} ?  'btn-sm btn-success ' : 'btn-sm btn-danger '"
+                                th:disabled="${#strings.isEmpty(uiPadCase.errorLog)} ?  'true ' : 'false'"
+                           onclick="catLog(this)"> 查看日志 </button>
+
+                        <button href="javascript:void(0)" th:data-log="${uiPadCase.testLogPath}"
+                                th:class="${#strings.isEmpty(uiPadCase.testLogPath)}? 'btn-sm btn-success' : ' btn-sm btn-danger'"
+                                th:disabled="${#strings.isEmpty(uiPadCase.testLogPath)} ? 'true' : 'false'"
+                                onclick="catTestLog(this)">运行日志</button>
+
+                        <button href="javascript:void(0)" th:data-picture="${uiPadCase.picturePathList}"
+                                th:class="${#strings.isEmpty(uiPadCase.picturePath)} ?  'btn-sm btn-success ' : 'btn-sm btn-danger '"
+                                th:disabled="${#strings.isEmpty(uiPadCase.picturePath)} ?  'true ' : 'false '"
+                                onclick="catPicture(this)">运行截图</button>
+
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+
+</div>
+
+
+</div>
+
+
+<!--查看日志的模态框-->
+<div class="modal fade" id="catLog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-target=".bs-example-modal-lg">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">日志详情</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea style="width:100%;" type="text" rows="20"  th:text="logs" readonly="readonly"
+                          id="logDetail"></textarea>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-sm btn-primary" data-dismiss="modal">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!--查看图片的模态框-->
+<div class="modal fade" id="catPicture" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-target=".bs-example-modal-lg">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">图片详情</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="picture-content">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-sm btn-primary" data-dismiss="modal">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--查看测试日志的模态框-->
+<div class="modal fade" id="catTestLog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-target=".bs-example-modal-lg">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">测试日志详情</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea style="width:100%;" type="text" rows="20"  th:text="logs" readonly="readonly"
+                          id="testLogDetail"></textarea>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-sm btn-primary" data-dismiss="modal">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('uiPadReport'));
+    var data = [[${uiPadSerialnoLists}]];
+    var option = {
+        title: {
+            text: '',
+            subtext: '',
+            x: 'center',
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'horizontal',
+            left: 'center',
+            bottom: '0',
+            data: ['成功', '失败', '错误']
+        },
+        series: [
+            {
+                name: '测试结果',
+                type: 'pie',
+                radius: '50%',
+                center: ['50%', '60%'],
+                data: [
+                    {value: data.passCase, name: '成功'},
+                    {value: data.failCase, name: '失败'},
+                    {value: data.errorCase, name: '错误'},
+                ],
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: true,
+                            formatter: '{b} : {c} ({d}%)'
+                        },
+                        labelLine: {show: true}
+                    }
+                }
+            }
+        ],
+        color: ['green', 'red', '#FF9F7F', '#FFD700', '#C9C9C9', '#E066FF', '#C0FF3E']
+    };
+    myChart.setOption(option);
+
+</script>
+
+
+
+</body>
+
+
+</html>

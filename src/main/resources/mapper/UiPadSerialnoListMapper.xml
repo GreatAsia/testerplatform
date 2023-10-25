@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.ui.UiPadSerialnoListMapper">
+
+
+    <!--<insertUiPadSerialnoList >-->
+    <insert id="insertUiPadSerialnoList" parameterType="com.okay.testcenter.domain.report.UiPadSerialnoList">
+      INSERT INTO ui_pad_serialnolist(ID,RUNID,SERIALNO,VERSION,TOTALCASE,PASSCASE,FAILCASE,ERRORCASE,ELAPSEDTIME,STARTTIME,PASSRATE,ROMVERSION,APKVERSION,NETWORK,ENV)
+      values (#{id},#{runId},#{serialno},#{version},#{totalCase},#{passCase},#{failCase},#{errorCase},#{elapsedTime},#{startTime},#{passRate},#{romVersion},#{apkVersion},#{netWork},#{env})
+    </insert>
+
+
+    <!--<updateUiPadSerialnoList>-->
+    <update id="updateUiPadSerialnoList" parameterType="com.okay.testcenter.domain.report.UiPadSerialnoList">
+        UPDATE ui_pad_serialnolist
+        SET RUNID=#{runId},SERIALNO=#{serialno},VERSION=#{version},TOTALCASE=#{totalCase},PASSCASE=#{passCase},FAILCASE=#{failCase},ERRORCASE=#{errorCase},ELAPSEDTIME=#{elapsedTime},STARTTIME=#{startTime},PASSRATE=#{passRate},ROMVERSION=#{romVersion},APKVERSION=#{apkVersion},NETWORK=#{netWork},ENV=#{env}
+        WHERE ID=#{id}
+    </update>
+
+
+    <!--<deleterUiPadSerialnoList>-->
+    <delete id="deleterUiPadSerialnoList" parameterType="int">
+        DELETE FROM ui_pad_serialnolist
+        WHERE ID=#{0}
+    </delete>
+
+    <!--<findUiPadSerialnoListById>-->
+    <select id="findUiPadSerialnoListById" parameterType="int"
+            resultType="com.okay.testcenter.domain.report.UiPadSerialnoList">
+        SELECT *
+        FROM ui_pad_serialnolist
+        WHERE ID=#{0}
+    </select>
+
+
+    <!--<findUiPadSerialnoListByRunId>-->
+    <select id="findUiPadSerialnoListByRunId" parameterType="com.okay.testcenter.domain.report.UiPadSerialnoList"
+            resultType="com.okay.testcenter.domain.report.UiPadSerialnoList">
+        SELECT *
+        FROM ui_pad_serialnolist
+        WHERE RUNID=#{id}
+        ORDER BY failCase DESC
+    </select>
+
+    <!--findUiPadSerialnoListBySerialno-->
+    <select id="findUiPadSerialnoListBySerialno" parameterType="com.okay.testcenter.domain.report.UiPadSerialnoList"
+            resultType="com.okay.testcenter.domain.report.UiPadSerialnoList">
+        SELECT *
+        FROM ui_pad_serialnolist
+        WHERE SERIALNO LIKE #{serialno}
+        ORDER BY failCase DESC
+    </select>
+
+    <!--findUiPadSerialnoList-->
+    <select id="findUiPadSerialnoList" parameterType="com.okay.testcenter.domain.report.UiPadSerialnoList"
+            resultType="com.okay.testcenter.domain.report.UiPadSerialnoList">
+        SELECT *
+        FROM ui_pad_serialnolist
+        ORDER BY failCase DESC
+    </select>
+
+    <!--findUiPadSerialnoListByRunIdAndSerialno-->
+    <select id="findUiPadSerialnoListByRunIdAndSerialno"
+            parameterType="com.okay.testcenter.domain.report.UiPadSerialnoList"
+            resultType="com.okay.testcenter.domain.report.UiPadSerialnoList">
+        SELECT *
+        FROM ui_pad_serialnolist
+        WHERE RUNID=#{param1} AND SERIALNO LIKE #{param2}
+        ORDER BY id DESC
+    </select>
+
+
+</mapper>

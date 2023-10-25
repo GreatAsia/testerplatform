@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="html/mainfragment :: head"></head>
+    <title>菜单列表</title>
+    <script type="text/javascript" th:src="@{/js/toastr.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/toastr.min.css}" media="screen">
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<!--修改模块模态框-->
+<div th:fragment="updateAndInsertModal" class="modal fade" id="updateAndInsertModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">修改模块</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <form id="updateOrInsertForm">
+                <div class="modal-body">
+                    <table>
+                        <tr class="th-inner">
+                            <td class="text-right"><span>名称:</span></td>
+                            <td><input class="form-control" id="menuName" type="text" name="menuName"
+                                       style="height:35px;width:300px"
+                                       placeholder=""></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-right">url:</td>
+                            <td><input class="form-control" id="menuUrl" type="text" name="menuUrl"
+                                       style="height:35px;width:300px"
+                                       placeholder=""></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-right">主菜单:</td>
+                            <td><select class="form-control" id="isMenu" type="text" name="isMenu"
+                                        style="height:35px;width:300px"
+                                        placeholder="">
+                                <option value="0">是</option>
+                                <option value="1">否</option>
+                            </select>
+                            </td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-right">状态:</td>
+                            <td><select class="form-control" id="isDelete" type="text" name="isDelete"
+                                        style="height:35px;width:300px"
+                                        placeholder="">
+                                <option value="0">未删除</option>
+                                <option value="1">删除</option>
+                            </select>
+                            </td>
+                        </tr>
+                        <tr class="th-inner" style="display:none;">
+                            <td><input class="form-control" id="updateAndInsetId" type="text" name="id"
+                                       style="height:35px;width:300px"
+                                       placeholder=""></td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="updateMenu()">提交
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<nav th:replace="html/mainfragment :: deleteModal"></nav>
+<div class="container-fluid">
+    <div>
+        <div class="row">
+            <div class="col-md-2">
+                <nav th:replace="html/mainfragment :: letf_nav"></nav>
+            </div>
+            <div class="col-md-10">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                    <li class="breadcrumb-item "><a>WebUi</a></li>
+                    <li class="breadcrumb-item "><a>report</a></li>
+                    <li class="breadcrumb-item active"><a>list</a></li>
+                </ol>
+                <div>
+                    <button onclick="showUpdateModal()"
+                            class="btn btn-sm btn-info " style="margin-bottom: 10px">新增
+                    </button>
+                </div>
+                <table class="table table-hover table-bordered table-condensed align-middle ">
+                    <thead class="thead-light">
+                    <tr>
+                        <th style="width: 5%">ID</th>
+                        <th>名称</th>
+                        <th>url</th>
+                        <th>主菜单</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    <tr th:each="menu : ${menus}">
+                        <td th:text="${menu.id}" style="width: 10%"></td>
+                        <td th:text="${menu.menuName}"></td>
+                        <td th:text="${menu.menuUrl}"></td>
+                        <td th:text="${menu.isMenu=='0'?'是':'否'}"></td>
+                        <td th:text="${menu.isDelete=='0'?'未删除':'删除'}"></td>
+                        <td style="width: 12%">
+                            <button th:onclick="'javascript:showUpdateModal('+${menu.id}+')'"
+                                    class="btn btn-sm btn-info ">修改
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav id="switchPage" aria-label="Page navigation example" th:if="${pageInfo.total}>0">
+                    <ul class="pagination justify-content-center">
+
+                        <li class="page-item"><a class="page-link" id="homePage"
+                                                 th:href="'/user/getMenuByPage'"
+                                                 target="_self">首页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasPreviousPage}==true"><a class="page-link"
+                                                                                           id="previousPage"
+                                                                                           th:href="'/user/getMenuByPage?currentPage='+${pageInfo.prePage}">上一页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasNextPage}==true"><a class="page-link" id="nextPage"
+                                                                                       th:href="'/user/getMenuByPage?currentPage='+${pageInfo.nextPage}">下一页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="lastPage"
+                                                 th:href="'/user/getMenuByPage?currentPage='+${pageInfo.pages}">末页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="currentPage"
+                                                 th:text="第+${pageInfo.pageNum}+页"></a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="totalPage" th:text="共+${pageInfo.pages}+ 页"> </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    $(function () {
+        document.getElementById("userManager").className = "collapse show";
+    })
+    function showUpdateModal(id) {
+        document.getElementById("updateOrInsertForm").reset();
+        if(id!=null){
+            $("#updateAndInsetId").val(id);
+            $.ajax({
+                type: "get",
+                url: "/user/getSingleMenuByMenu?id=" + id,
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        $("#updateAndInsetId").val(data.data.id)
+                        $("#menuName").val(data.data.menuName)
+                        $("#menuUrl").val(data.data.menuUrl)
+                        var option = $("#isMenu option")
+                        for (i = 0; i < option.length; i++) {
+                            if (option[i].value == data.data.isMenu) {
+                                option[i].selected = true;
+                            }
+                        }
+                        var isDelete = $("#isDelete option")
+                        for (i = 0; i < isDelete.length; i++) {
+                            if (isDelete[i].value == data.data.isDelete) {
+                                isDelete[i].selected = true;
+                            }
+                        }
+                    } else {
+                        alert("新增或修改失败：" + data);
+                    }
+
+                },
+                error: function (e) {
+                    alert("新增或修改失败：" + JSON.stringify(e));
+                }
+            });
+        }
+
+        $("#updateAndInsertModal").modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+
+    /**
+     * 更新删除user
+     */
+    function updateMenu() {
+        if ($("#roleId").value != null || $("#roleId").value != "") {
+            params = serializeNotNull($("#updateOrInsertForm").serialize())
+            $.ajax({
+                type: "POST",
+                url: "/user/updateOrInsertMenu",
+                dataType: "json",
+                data: params,
+                success: function (data) {
+                    if (data.code == 200) {
+                        //隐藏模态框，删除对应的行
+                        $("#deleteModal").modal('hide');
+                        location.reload();
+                    } else {
+                        alert("更新或新增失败");
+                    }
+
+                },
+                error: function (e) {
+                    alert("更新或新增失败");
+                }
+            })
+        }
+    }
+
+    function serializeNotNull(serStr) {
+        return serStr.split("&").filter(function(str){return !str.endsWith("=")}).join("&");
+    }
+</script>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/autoui/deviceList.js}"></script>
+    <script type="text/javascript" th:src="@{/js/autoui/autoUi.js}"></script>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>autoui</a></li>
+                <li class="breadcrumb-item active"><a>pad</a></li>
+            </ol>
+
+            <!-- 获取设备列表 -->
+
+            <a th:id="totalDevice" ></a>
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>功能</th>
+                    <th>操作</th>
+                    <th>结果</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>获取设备列表</td>
+                    <td>
+                        <a th:id="getDeviceList" class="btn btn-sm btn-info" onclick="getDeviceList()">运行</a>
+                    </td>
+                    <td >
+                        <span id="deviceResult"></span>
+                    </td>
+                    <td >
+                        <span id="deviceDesc" ></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>安装测试APP</td>
+                    <td>
+                        <a th:id="installTestApp"
+                           class="btn btn-sm btn-info" onclick="installTestApp()">运行</a>
+                    </td>
+                    <td>
+                        <span th:id="isInstallTestApp"></span>
+                    </td>
+                    <td>
+                        <input   id="installTestAppDesc" type="text" name="modelName"
+                               style="height:40px;width:200px"
+                               value="app-debug-androidTest.apk">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>安装APP</td>
+                    <td>
+                        <a th:id="installApp"
+                           class="btn btn-sm btn-info" onclick="installApp()">运行</a>
+                    </td>
+                    <td>
+                        <span th:id="isInstallApp"></span>
+                    </td>
+                    <td>
+                        <input   id="installAppDesc" type="text" name="modelName"
+                               style="height:40px;width:200px"
+                               value="app-debug.apk">
+                    </td>
+                </tr>
+                <tr>
+                    <td>PUSH账号</td>
+                    <td>
+                        <a th:id="pushAccount"
+                           class="btn btn-sm btn-info" onclick="pushAccount()">运行</a>
+                    </td>
+                    <td>
+                        <span th:id="isPushAccount"></span>
+                    </td>
+                    <td >
+                        <input   id="pushAccountDesc" type="text" name="modelName"
+                           style="height:40px;width:200px"
+                           value="students_dev"> &nbsp&nbsp
+                        <a href="javascript:void(0)" class="btn btn-info btn-primary "
+                           onclick="showAddModal(this)">添加学生账号</a>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>ADB命令</td>
+                    <td>
+                        <a th:id="runAdb"
+                           class="btn btn-sm btn-info" onclick="runAdb()">运行</a>
+                    </td>
+                    <td>
+                        <span th:id="isRunAdb"></span>
+                    </td>
+                    <td>
+                        <input  id="runAdbDesc" type="text" name="runAdbDesc"
+                               style="height:40px;width:200px"
+                               value="" placeholder="直接输入adb后面内容">
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>环境</th>
+                    <th>域名</th>
+                    <th>老师账号</th>
+                    <th>密码</th>
+                    <th>习题</th>
+                    <th>课程包</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="dev_env" th:text="dev"></td>
+                    <td>
+                        <a id="dev_host" href="https://jiaoshi-dev.xk12.cn" target="_blank">https://jiaoshi-dev.xk12.cn</a>
+                    </td>
+                    <td>
+                        <input style="height:35px;width:110px" id="dev_username" th:value="61951116296">
+                    </td>
+                    <td id="dev_password">Okay@123</td>
+                    <td>
+                        <input style="height:35px;width:70px" id="dev_exercise" th:value="809407">
+                    </td>
+                    <td>
+                        <input style="height:35px;width:70px" id="dev_coursePackage" th:value="800133">
+                    </td>
+                    <td>
+                        <a th:id="dev_send" th:text="Send"
+                           class="btn btn-sm btn-info" onclick="sendDevInfo()"></a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td id="hotfix_env" th:text="hotfix"></td>
+
+                    <td>
+                        <a id="hotfix_host" href="https://jiaoshi-hotfix.xk12.cn" target="_blank">https://jiaoshi-hotfix.xk12.cn</a>
+                    </td>
+                    <td>
+                        <input style="height:35px;width:110px" id="hotfix_username" th:value="61951116296">
+                    </td>
+                    <td id="hotfix_password">Okay@123</td>
+                    <td>
+                        <input style="height:35px;width:70px" id="hotfix_exercise" th:value="818074">
+                    </td>
+                    <td>
+                        <input style="height:35px;width:70px" id="hotfix_coursePackage" th:value="828746">
+                    </td>
+                    <td>
+                        <a th:id="dev_send" th:text="Send"
+                           class="btn btn-sm btn-info" onclick="sendHotfixInfo()"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="online_env" th:text="online"></td>
+
+                    <td>
+                        <a id="online_host" href="https://jiaoshi.okjiaoyu.cn" target="_blank">https://jiaoshi.okjiaoyu.cn</a>
+                    </td>
+                    <td>
+                        <input style="height:35px;width:110px" id="online_username" th:value="61951240665">
+                    </td>
+                    <td id="online_password">Okay@123</td>
+                    <td>
+                        <input style="height:35px;width:70px" id="online_exercise" th:value="872935">
+                    </td>
+                    <td>
+                        <input style="height:35px;width:70px" id="online_coursePackage" th:value="928836">
+                    </td>
+                    <td>
+                        <a th:id="dev_send" th:text="Send"
+                           class="btn btn-sm btn-info" onclick="sendOnlineInfo()"></a>
+                    </td>
+
+
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+<!--添加学生账号模态框（Modal）-->
+<div th:fragment="addModal" class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="myModalLabel">
+                    添加学生账号
+                </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr class="th-inner">
+                        <td class="text-right">文件名称:</td>
+                        <td><input   id="addStudentName" type="text" name="addModelContent"
+                                   style="height:30px;width:300px"
+                                   placeholder=""></td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">学生账号:</td>
+                        <td>
+                            <textarea id="addStudentComments" type="text" name="modelComments"
+                                      style="height:60px;width:300px"
+                                      placeholder=""></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">返回</button>
+                <button type="button" id="addModelID" class="btn btn-sm btn-primary" onclick="addModelID()">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+
+
+</body>
+
+
+</html>

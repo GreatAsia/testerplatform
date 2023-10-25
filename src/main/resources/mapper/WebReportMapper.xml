@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.webUi.WebReportMapper">
+    <resultMap id="BaseResultMap" type="com.okay.testcenter.domain.ui.WebReport">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="project_names" jdbcType="VARCHAR" property="projectNames"/>
+        <result column="project_ids" jdbcType="VARCHAR" property="projectIds"/>
+        <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
+        <result column="fail_case_count" jdbcType="INTEGER" property="failCaseCount"/>
+        <result column="all_case_count" jdbcType="INTEGER" property="allCaseCount"/>
+    </resultMap>
+    <sql id="Base_WebCase_Column_List">
+        id,project_names,project_ids,start_time,end_time,fail_case_count,all_case_count
+    </sql>
+
+    <insert id="addWebReport" parameterType="com.okay.testcenter.domain.ui.WebReport" keyColumn="id"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into web_report
+        (project_names,project_ids,start_time,end_time,fail_case_count,all_case_count) values
+        (#{projectNames},#{projectIds},#{startTime},#{endTime},#{failCaseCount},#{allCaseCount})
+    </insert>
+
+    <select id="getWebReportList" parameterType="com.okay.testcenter.domain.ui.WebReport"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_WebCase_Column_List"/>
+        from web_report
+        where 1=1
+        <if test="startTime != null and id != ''">
+            and id=#{id}
+        </if>
+        <if test="projectNames != null and projectNames != ''">
+            and project_names=#{projectNames}
+        </if>
+        <if test="projectIds != null and projectIds != ''">
+            and project_ids=#{projectIds}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and start_time=#{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and end_time=#{endTime}
+        </if>
+        <if test="failCaseCount != null and failCaseCount != ''">
+            and fail_case_count=#{failCaseCount}
+        </if>
+        <if test="allCaseCount != null and allCaseCount != ''">
+            and all_case_count=#{allCaseCount}
+        </if>
+        order by id desc
+    </select>
+
+
+    <select id="getNewWebReport" resultMap="BaseResultMap">
+        select
+        <include refid="Base_WebCase_Column_List"/>
+        from web_report order by id desc limit 1
+    </select>
+</mapper>

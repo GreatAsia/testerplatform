@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.alarm.AlarmPeopleMapper">
+
+
+    <!--<insert >-->
+    <insert id="insert" parameterType="com.okay.testcenter.domain.AlarmPeople">
+      INSERT INTO alarm_people(id,project,phone,create_time,update_time,qa_name,rd_name)
+      values (#{id},#{project},#{phone},#{create_time},#{update_time},#{qa_name},#{rd_name})
+    </insert>
+
+
+    <!--<update>-->
+    <update id="update" parameterType="com.okay.testcenter.domain.AlarmPeople">
+        UPDATE alarm_people
+        SET project=#{project},phone=#{phone},update_time=#{update_time},qa_name=#{qa_name},rd_name=#{rd_name}
+        WHERE ID=#{id}
+    </update>
+
+    <!--<delete>-->
+    <delete id="delete" parameterType="int">
+        DELETE FROM alarm_people
+        WHERE id=#{0}
+    </delete>
+
+
+    <!--<findById>-->
+    <select id="findById" parameterType="int" resultType="com.okay.testcenter.domain.AlarmPeople">
+        SELECT *
+        from alarm_people
+        WHERE id=#{0}
+    </select>
+
+    <!--<findByProject>-->
+    <select id="findByProject" parameterType="string" resultType="com.okay.testcenter.domain.AlarmPeople">
+        SELECT *
+        from alarm_people
+        WHERE project like #{0}
+    </select>
+
+    <!--<list>-->
+    <select id="list" parameterType="com.okay.testcenter.domain.AlarmPeople"
+            resultType="com.okay.testcenter.domain.AlarmPeople">
+        SELECT *
+        FROM alarm_people
+        ORDER BY id DESC
+    </select>
+
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.ui.UiPadRunIdListMapper">
+
+
+    <!--<insertUiPadRunIdList >-->
+    <insert id="insertUiPadRunIdList" parameterType="com.okay.testcenter.domain.report.UiPadRunIdList">
+      INSERT INTO ui_pad_runidlist(ID,TOTALDEVICE,PASSDEVICE,FAILDEVICE,ERRORDEVICE,ELAPSEDTIME,STARTTIME,PASSRATE)
+      values (#{id},#{totalDevice},#{passDevice},#{failDevice},#{errorDevice},#{elapsedTime},#{startTime},#{passRate})
+    </insert>
+
+
+    <!--<updateUiPadRunIdList>-->
+    <update id="updateUiPadRunIdList" parameterType="com.okay.testcenter.domain.report.UiPadRunIdList">
+        UPDATE ui_pad_runidlist
+        SET TOTALDEVICE=#{totalDevice},PASSDEVICE=#{passDevice},FAILDEVICE=#{failDevice},ERRORDEVICE=#{errorDevice},ELAPSEDTIME=#{elapsedTime},STARTTIME=#{startTime},PASSRATE=#{passRate}
+        WHERE ID=#{id}
+    </update>
+
+
+    <!--<deleteUiPadById>-->
+    <delete id="deleteUiPadById" parameterType="int">
+        DELETE FROM ui_pad_runidlist
+        WHERE ID=#{0}
+    </delete>
+
+    <!--<findUiPadRunIdList>-->
+    <select id="findUiPadRunIdList" parameterType="int" resultType="com.okay.testcenter.domain.report.UiPadRunIdList">
+        SELECT *
+        from ui_pad_runidlist
+        WHERE ID=#{0}
+    </select>
+
+    <!--<getLastId>-->
+    <select id="getLastId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT ID
+        from ui_pad_runidlist
+        ORDER BY ID DESC LIMIT 1
+    </select>
+
+
+    <!--<findUiPadRunList>-->
+    <select id="findUiPadRunList" parameterType="com.okay.testcenter.domain.report.UiPadRunIdList"
+            resultType="com.okay.testcenter.domain.report.UiPadRunIdList">
+        SELECT *
+        from ui_pad_runidlist
+        ORDER BY id DESC
+    </select>
+
+
+</mapper>

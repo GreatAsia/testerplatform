@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/report/report.js}"></script>
+    <script type="text/javascript" th:src="@{/js/report/sendEmail.js}"></script>
+</head>
+<body>
+
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid  ">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div id="reportlist" class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>report</a></li>
+                <li class="breadcrumb-item "><a href="/uiPad/report/list">ui</a></li>
+                <li class="breadcrumb-item "><a>report</a></li>
+
+            </ol>
+            <hr>
+
+            <div class="col-md-10 row">
+                <div>
+                    <input class="form-control" id="sendTo" type="text" name="sendTo"
+                           style="height:35px;width:600px" placeholder="收件人">
+                </div>
+                <div>
+                    &nbsp&nbsp
+                    <button id="sendEmail" onclick="sendEmail()" class="btn btn-info">发送报告</button>
+                </div>
+            </div>
+            <hr>
+
+
+            <div class="form-inline col-md-6">
+                    <h6 class="text-center">测试环境</h6>
+                    <table class="table table-hover table-bordered table-condensed">
+                        <tr style="font-size: 14px" class="th-inner">
+                            <td style="word-wrap:break-word;line-height:0.8;" class="text-left "
+                                th:text="ROM版本 + ':&nbsp&nbsp'+ ${uiPadSerialno.romVersion}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td style="font-size:14px;line-height:0.8" class="text-left "
+                                th:text="APK版本 + ':&nbsp&nbsp'+ ${uiPadSerialno.apkVersion}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td style="font-size:14px;line-height:0.8" class="text-left "
+                                th:text="覆盖机型 + ':&nbsp&nbsp'+ ${uiPadSerialno.version}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td style="font-size:14px;line-height:0.8" class="text-left  "
+                                th:text="机器数量 + ':&nbsp&nbsp'+ ${uiPadRunIdList.totalDevice}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td style="font-size:14px;line-height:0.8" class="text-left  "
+                                th:text="网络 + ':&nbsp&nbsp'+ ${uiPadSerialno.netWork}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td style="font-size:14px;line-height:0.8" class="text-left    "
+                                th:text="环境 + ':&nbsp&nbsp'+ ${uiPadSerialno.env}"></td>
+                        </tr>
+
+                    </table>
+
+            </div>
+            <p></p>
+            <p></p>
+            <p></p>
+            <div class="form-inline  col-md-10" id="uiPadReport">
+                <h6 class="text-center">测试详情</h6>
+                <table class="table table-hover table-bordered table-condensed">
+                    <tr class="th-inner">
+                        <td style="font-size:14px;line-height:0.5" class="text-left "
+                            th:text="成功用例数 + ':&nbsp&nbsp'+ ${caseResult.passCase}">
+                        </td>
+                        <td style="font-size:14px;border-bottom: none;line-height:0.5" class="text-left" ></td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td style="font-size:14px;line-height:0.5" class="text-left  "
+                            th:text="失败用例数 + ':&nbsp&nbsp'+ ${caseResult.failCase}">
+                        </td>
+                        <td style="font-size:15px;border-top: none;line-height:0.5" class="text-left"
+                            th:text="通过率 + ':&nbsp&nbsp'+ ${caseResult.passRate}">
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td style="font-size:14px;line-height:0.5" class="text-left "
+                            th:text="运行用例数 + ':&nbsp&nbsp'+ ${caseResult.totalCase}">
+                        </td>
+                        <td style="font-size:14px;border-bottom: none;line-height:0.5" class="text-left">
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td style="font-size: 14px;line-height:0.5" class="text-left "
+                            th:text="用例总数 + ':&nbsp&nbsp'+ ${caseResult.countCase}"></td>
+                        <td style="font-size:15px;border-top: none;line-height:0.5" class="text-left    "
+                            th:text="覆盖率 + ':&nbsp&nbsp'+ ${caseResult.coverage}"></td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Table -->
+            <div class="col-md-10">
+                <table class=" table table-hover table-bordered table-condensed  ">
+                <thead class="thead-light" style="line-height:0.1">
+                <tr>
+                    <th style="font-size:14px">用例ID</th>
+                    <th style="font-size:14px">用例名称</th>
+                    <th style="font-size:14px">所属模块</th>
+                    <th style="font-size:14px">测试结果</th>
+                </tr>
+                </thead>
+                <tbody >
+                <tr   th:each="caseList: ${uiPadCaseLists}">
+                    <td style="line-height:0.1" th:text="${caseList.id}"></td>
+                    <td style="line-height:0.1"  th:text="${caseList.caseDesc}"></td>
+                    <td style="line-height:0.1" th:text="${caseList.caseModule}"></td>
+                    <td style="line-height:0.1 "  th:class="${caseList.caseResult eq ('false')} ? 'text-danger ' : 'text-success'"
+                        th:if="${caseList.caseResult eq 'false'}"><strong>FAIL</strong></td>
+                    <td style="line-height:0.1 "  th:class="${caseList.caseResult eq ('false')} ? 'text-danger ' : 'text-success'"
+                        th:if="${caseList.caseResult eq 'true'}"><strong>PASS</strong></td>
+                </tr>
+
+                </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</body>
+
+
+</html>

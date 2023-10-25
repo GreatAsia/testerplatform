@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/report/report.js}"></script>
+    <script type="text/javascript" th:src="@{/js/report/sendEmail.js}"></script>
+    <script type="text/javascript" th:src="@{/js/report/reportDetail.js}"></script>
+</head>
+<body>
+
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div id="reportlist" class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>report</a></li>
+                <li class="breadcrumb-item "><a href="/middle/report/list">middle</a></li>
+                <li class="breadcrumb-item active"><a>detail</a></li>
+
+            </ol>
+            <hr>
+
+            <div class="col-md-10 row">
+                <div>
+                    <input class="form-control" id="sendTo" type="text" name="sendTo"
+                           style="height:35px;width:600px" placeholder="收件人">
+                </div>
+                <div>
+                    &nbsp&nbsp
+                    <button id="sendEmail" onclick="sendEmail()" class="btn btn-info">发送报告</button>
+                    &nbsp&nbsp
+                    <button id="downLoadReport" onclick="downLoadReport()" class="btn btn-info">下载</button>
+                    &nbsp&nbsp
+                    <button id="createBug" onclick="createBug()" class="btn btn-info">提BUG</button>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="form-inline col-md-5">
+
+                    <h7 class="text-left"><strong>报告汇总</strong></h7>
+                    <hr>
+
+                    <table class="table table-hover table-bordered table-condensed">
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="运行ID + ':&nbsp&nbsp'+ ${middleTestHistory.id}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td
+                                    th:class="${middleTestHistory.result eq ('PASS')} ? 'text-left text-info' : 'text-left text-danger'"
+                                    th:text="测试结果 + ':&nbsp&nbsp'+ ${middleTestHistory.result}">
+                            </td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="用例总数 + ':&nbsp&nbsp'+ ${middleTestHistory.totalCase}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="通过数量 + ':&nbsp&nbsp'+ ${middleTestHistory.passCase}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-danger"
+                                th:text="失败数量 + ':&nbsp&nbsp'+ ${middleTestHistory.failCase}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="测试项目 + ':&nbsp&nbsp'+ ${middleTestHistory.projectName}"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-left text-info"
+                                th:text="测试环境 + ':&nbsp&nbsp'+ ${middleTestHistory.env}" }></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="开始时间 + ':&nbsp&nbsp'+ ${middleTestHistory.startTime}"></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-left text-info"
+                                th:text="结束时间 + ':&nbsp&nbsp'+ ${middleTestHistory.endTime}"></td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div class="form-inline col-md-5" id="dubboReport" style="width: 320px;height:320px;"></div>
+
+            </div>
+            <hr>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p>
+
+            <h7 class="text-left"><strong>详细数据</strong></h7>
+            <hr>
+            <!--Table -->
+
+
+            <table class=" table table-hover table-bordered table-condensed  ">
+                <thead class="thead-light">
+                <tr>
+                    <th>历史ID</th>
+                    <th>用例名称</th>
+                    <th>结果</th>
+                    <th>预期</th>
+                    <th>响应</th>
+                    <th>请求</th>
+                    <th>响应码</th>
+                    <th>耗时(ms)</th>
+                    <th>requestId</th>
+                    <th>URL</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="middleInterface: ${middleRequestHistoryList}">
+                    <td th:text="${middleInterface.id}"></td>
+                    <td th:text="${middleInterface.caseName}"></td>
+                    <td th:class="${middleInterface.result eq ('PASS')} ? 'text-left text-info' : 'text-left text-danger'"
+                        th:text="${middleInterface.result}"></td>
+                    <td th:text="${middleInterface.expectResult}"></td>
+                    <td>
+                        <button class="btn-sm btn-info " href="javascript:void(0)"
+                                th:data-content="${middleInterface.responseContent}"
+                                onclick="catContent(this)" th:text="查看"></button>
+                    </td>
+                    <td>
+                        <button class="btn-sm btn-info " href="javascript:void(0)"
+                                th:data-content="${middleInterface.requestData}"
+                                onclick="catContent(this)" th:text="查看"></button>
+                    </td>
+                    <td th:text="${middleInterface.responseCode}"></td>
+                    <td th:text="${middleInterface.elapsed_time}"></td>
+                    <td th:text="${middleInterface.requestId}"></td>
+                    <td th:text="${middleInterface.url}"></td>
+
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+<!--查看请求和响应信息的模态框-->
+<div class="modal fade" id="content" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     data-target=".bs-example-modal-lg">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">内容</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea style="width:100%;" type="text" rows="10" th:text="logs" readonly="readonly"
+                          id="contentDetail"></textarea>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-sm btn-primary" data-dismiss="modal">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--提交BUG-->
+<div class="modal fade" id="bugInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     data-target=".bs-example-modal-lg">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">创建Bug信息</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea style="width:100%;" type="text" rows="10" th:text="logs" readonly="readonly"
+                          id="productId"></textarea>
+            </div>
+            <div class="modal-body">
+                <textarea style="width:100%;" type="text" rows="10" th:text="logs" readonly="readonly"
+                          id="moduleId"></textarea>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-sm btn-primary" data-dismiss="modal">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('dubboReport'));
+    var data = [[${middleTestHistory}]];
+    var option = {
+        title: {
+            text: '',
+            subtext: '',
+            x: 'center',
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'horizontal',
+            left: 'center',
+            bottom: '0',
+            data: ['成功', '失败']
+        },
+        series: [
+            {
+                name: '测试结果',
+                type: 'pie',
+                radius: '50%',
+                center: ['50%', '60%'],
+                data: [
+                    {value: data.passCase, name: '成功'},
+                    {value: data.failCase, name: '失败'},
+                ],
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: true,
+                            formatter: '{b} : {c} ({d}%)'
+                        },
+                        labelLine: {show: true}
+                    }
+                }
+            }
+        ],
+        color: ['green', 'red']
+    };
+    myChart.setOption(option);
+
+</script>
+
+
+</body>
+
+
+</html>

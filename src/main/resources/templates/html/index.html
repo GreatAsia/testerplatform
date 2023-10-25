@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/html/homePage.js}"></script>
+</head>
+
+
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a>/HOME</a></li>
+
+            </ol>
+
+            <div class="row col-md-10">
+
+                <div class="col-md-10">
+                    <hr>
+                    <div>
+                        <a><strong><h5>性能测试</h5></strong></a>
+                    </div>
+                    <div>
+                        <a href="/performance/pad/serialno/list"><h6>移动端:可展示APP端的内存、流量和ROM端的内存、流量、耗电量</h6>
+                        </a>
+                    </div>
+                    <div>
+                        <a><h6>中间层:中间层接口的性能测试</h6></a>
+                    </div>
+                    <div>
+                        <a><h6>后端:Dubbo接口的性能测试</h6></a>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="col-md-10">
+                    <div>
+                        <a><strong><h5>Ui自动化</h5></strong></a>
+                    </div>
+                    <div>
+                        <a href="/uiPad/getDeviceList"><h6>APP-获取设备:获取设备列表、安装APP、PUSH账号、ADB命令、发布(课程、作业、测评、预习)</h6>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="/uiPad/case/list"><h6>APP-用例管理:用例添加、修改、删除和使用说明</h6></a>
+                    </div>
+                    <div>
+                        <a href="/uiPad/case/runlist"><h6>APP-执行用例:用例运行</h6></a>
+                    </div>
+                    <div>
+                        <a><h6>ROM</h6></a>
+                    </div>
+                    <div>
+                        <a><h6>WEB</h6></a>
+                    </div>
+
+                    <hr>
+                </div>
+
+                <div class="col-md-10">
+                    <div>
+                        <a><strong><h5>中间层自动化</h5></strong></a>
+                    </div>
+                    <div>
+                        <a href="/middle/run"><h6>接口调试:POST、GET</h6></a>
+                    </div>
+                    <div>
+                        <a href="/middle/info/list"><h6>信息管理:添加、修改、删除信息</h6></a>
+                    </div>
+                    <div>
+                        <a href="/middle/project/list"><h6>项目管理:添加、修改、删除项目</h6></a>
+                    </div>
+                    <div>
+                        <a href="/middle/module/list"><h6>
+                            模块管理:添加、修改、删除模块</h6></a>
+                    </div>
+                    <div>
+                        <a href="/middle/interface/list"><h6>
+                            接口管理:添加、修改、删除接口</h6></a>
+                    </div>
+                    <div>
+                        <a href="/middle/case/list"><h6>
+                            用例管理:添加、修改、删除、运行用例</h6></a>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="col-md-10">
+                    <div>
+                        <a><strong><h5>后端自动化</h5></strong></a>
+                    </div>
+                    <div>
+                        <a href="/dubbo/test"><h6>接口调试:后端接口调试</h6></a>
+                    </div>
+                    <div>
+                        <a href="/dubbo/module"><h6>模块配置:添加、修改、删除模块</h6></a>
+                    </div>
+                    <div>
+                        <a href="/dubbo/list"><h6>
+                            接口管理:接口运行、查找、修改、删除</h6></a>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="col-md-10">
+                    <div>
+                        <a><strong><h5>测试报告</h5></strong></a>
+                    </div>
+                    <div>
+                        <a href="/uiPad/report/list"><h6>UI:报告、设备、删除、翻页</h6></a>
+                    </div>
+                    <div>
+                        <a href="/middle/report/list"><h6>
+                            中间层:报告、详情、翻页</h6></a>
+                    </div>
+                    <div>
+                        <a href="/dubbo/report/list"><h6>
+                            后端:报告、详情、翻页</h6></a>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="col-md-10">
+                    <div>
+                        <a><strong><h5>定时任务</h5></strong></a>
+                    </div>
+                    <div>
+                        <a href="/job/list"><h6>任务列表:添加、暂停、恢复、修改、删除、翻页</h6></a>
+                    </div>
+                    <hr>
+                </div>
+                <div class="col-md-10">
+                    <div>
+                        <a><strong><h5>环境管理</h5></strong></a>
+                    </div>
+                    <div>
+                        <a href="/monitor/config"><h6>环境配置:查看dev和hotfix环境的ZK配置地址</h6></a>
+                    </div>
+                    <div>
+                        <a href="/monitor/manager"><h6>环境管理:查看dev和hotfix环境的各个服务所在服务器地址</h6></a>
+                    </div>
+                    <div>
+                        <a href="/monitor/env"><h6>环境监控:查看dev和hotfix环境的服务器性能数据(CPU/内存/网络/IO)</h6></a>
+                    </div>
+                    <hr>
+                </div>
+                <div class="col-md-10">
+                    <div>
+                        <a><strong><h5>测试工具</h5></strong></a>
+                    </div>
+                    <div>
+                        <a href="/tool/list"><h6>服务端</h6></a>
+                    </div>
+                    <div>
+                        <a><h6>客户端</h6></a>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<canvas class="my-4" id="meChart" width="900" height="50"></canvas>
+<footer th:replace="html/mainfragment :: footer"></footer>
+</body>
+
+
+</html>

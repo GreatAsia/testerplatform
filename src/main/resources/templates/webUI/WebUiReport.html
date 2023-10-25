@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+<div class="container-fluid">
+    <div>
+        <div class="row">
+            <div class="col-md-2">
+                <nav th:replace="html/mainfragment :: letf_nav"></nav>
+            </div>
+            <div class="col-md-10">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                    <li class="breadcrumb-item "><a>WebUi</a></li>
+                    <li class="breadcrumb-item "><a>report</a></li>
+                    <li class="breadcrumb-item active"><a>list</a></li>
+                </ol>
+                <table class="table table-hover table-bordered table-condensed align-middle ">
+                    <thead class="thead-light">
+                    <tr>
+                        <th style="width: 5%">ID</th>
+                        <th>项目名称</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>失败条数</th>
+                        <th>总条数</th>
+                        <th>详情</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    <tr th:each="webReport : ${webReports}">
+                        <td th:text="${webReport.id}" style="width: 10%"></td>
+                        <td th:text="${webReport.projectNames}"></td>
+                        <td th:text="${webReport.startTime}"></td>
+                        <td th:text="${webReport.endTime}"></td>
+                        <td th:text="${webReport.failCaseCount}"></td>
+                        <td th:text="${webReport.allCaseCount}"></td>
+                        <td style="width: 10%"><a th:href=" @{/WebUi/reportDesc/list(id=${webReport.id})}"
+                                                  class="btn btn-sm btn-info ">查看详情</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav id="switchPage" aria-label="Page navigation example" th:if="${pageInfo.total}>0">
+                    <ul class="pagination justify-content-center">
+
+                        <li class="page-item"><a class="page-link" id="homePage"
+                                                 th:href="'/WebUi/report/list'"
+                                                 target="_self">首页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasPreviousPage}==true"><a class="page-link"
+                                                                                           id="previousPage"
+                                                                                           th:href="'/WebUi/report/list?currentPage='+${pageInfo.prePage}">上一页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasNextPage}==true"><a class="page-link" id="nextPage"
+                                                                                       th:href="'/WebUi/report/list?currentPage='+${pageInfo.nextPage}">下一页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="lastPage"
+                                                 th:href="'/WebUi/report/list?currentPage='+${pageInfo.pages}">末页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="currentPage" th:text="第+${pageInfo.pageNum}+页"></a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="totalPage" th:text="共+${pageInfo.pages}+ 页"> </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        document.getElementById("collapseSix").className = "collapse show";
+    })
+</script>
+</html>

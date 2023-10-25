@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/toastr.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/toastr.min.css}" media="screen">
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+<div class="container-fluid">
+    <div>
+        <div class="row">
+            <div class="col-md-2">
+                <nav th:replace="html/mainfragment :: letf_nav"></nav>
+            </div>
+            <div class="col-md-10">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                    <li class="breadcrumb-item "><a>ui</a></li>
+                    <li class="breadcrumb-item "><a>web</a></li>
+                    <li class="breadcrumb-item active"><a>list</a></li>
+                </ol>
+                <div class="col-md-12 row">
+                    <div class="col-md-2 ">
+                        <button onclick="showAddModel()" class="btn btn-info">添加平台</button>
+                    </div>
+                    <div class="col-md-3" style="margin-left: 58%">
+                        <div class="input-group">
+                            <input id="webPlatformName" type="text" class="form-control" placeholder="平台名称" th:value="${webPlatformName==null?'':webPlatformName}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button" onclick="selectCaseList()">搜索</button>
+                             </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <table class="table table-hover table-bordered table-condensed align-middle ">
+                    <thead class="thead-light">
+                    <tr>
+                        <th style="width: 5%">ID</th>
+                        <th>平台名称</th>
+                        <th>登录url</th>
+                        <th>登录参数</th>
+                        <th>登录方式</th>
+                        <th>Post方式</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    <tr th:each="webPlatform : ${webPlatforms}">
+                        <td th:text="${webPlatform.id}" style="width: 10%"></td>
+                        <td th:text="${webPlatform.platformName}"></td>
+                        <td th:text="${webPlatform.loginUrl}"></td>
+                        <td class="loginParams-class" th:text="${webPlatform.loginParams}"></td>
+                        <td th:text="${webPlatform.requestType} eq '0'?'get':'post'"></td>
+                        <td th:if="${ webPlatform.bodyType != null }"
+                            th:text="${webPlatform.bodyType} eq '0'?'from':'raw'"></td>
+                        <td th:if="${ webPlatform.bodyType eq null }"></td>
+                        <td>
+                            <button class="btn btn-info" th:onclick="showUpdateModel([[${webPlatform}]]);">修改</button>
+                            <button class="btn btn-danger" th:data-id="${webPlatform.id}"
+                                    onclick="showDeleteModal(this)">删除
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav id="switchPage" aria-label="Page navigation example" th:if="${pageInfo.total}>0">
+                    <ul class="pagination justify-content-center">
+
+                        <li class="page-item"><a class="page-link" id="homePage"
+                                                 th:href="'/ui/getWebPlatformByPage?'+'platformName='+${webPlatformName==null?'':webPlatformName}"
+                                                 target="_self">首页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasPreviousPage}==true"><a class="page-link"
+                                                                                           id="previousPage"
+                                                                                           th:href="'/ui/getWebPlatformByPage?currentPage='+${pageInfo.prePage}+'&platformName='+${webPlatformName==null?'':webPlatformName}">上一页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasNextPage}==true"><a class="page-link" id="nextPage"
+                                                                                       th:href="'/ui/getWebPlatformByPage?currentPage='+${pageInfo.nextPage}+'&platformName='+${webPlatformName==null?'':webPlatformName}">下一页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="lastPage"
+                                                 th:href="'/ui/getWebPlatformByPage?currentPage='+${pageInfo.pages}+'&platformName='+${webPlatformName==null?'':webPlatformName}">末页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="currentPage"
+                                                 th:text="第+${pageInfo.pageNum}+页"></a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="totalPage" th:text="共+${pageInfo.pages}+ 页"> </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:fragment="addModal" class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="myModalLabel">
+                    添加平台模块
+                </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <table>
+                    <tr class="th-inner">
+                        <td class="text-right">平台名称:</td>
+                        <td><input class="form-control" id="platformName" type="text" name="platformName"
+                                   style="height:35px;width:300px"
+                                   placeholder="例如：教师空间_dev"></td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">登录url:</td>
+                        <td><input class="form-control" id="loginUrl" type="text" name="loginUrl"
+                                   style="height:35px;width:300px"
+                                   placeholder="一定要url地址">
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">登录参数:</td>
+                        <td><input class="form-control" id="loginParams" type="text" name="loginParams"
+                                   style="height:35px;width:300px"
+                                   placeholder="json格式进行保存，否则无法登录">
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">请求类型:</td>
+                        <td><select class="form-control" id="requestType" type="text" name="requestType"
+                                    style="height:35px;width:300px"
+                                    placeholder="" onchange="openPostType(this)">
+                            <option value="0">get</option>
+                            <option value="1">post</option>
+                        </select>
+                        </td>
+                    </tr>
+                    <tr class="th-inner" id="bodyTypeParent" style="display: none">
+                        <td class="text-right">post方式:</td>
+                        <td><select class="form-control" id="bodyType" type="text" name="bodyType"
+                                    style="height:35px;width:300px"
+                                    placeholder="">
+                            <option value="0">form</option>
+                            <option value="1">json(raw)</option>
+                        </select>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="modal-footer">
+                    <input class="form-control" type="hidden" id="excuteID"/>
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">返回</button>
+                    <input type="submit" id="addModelID" class="btn btn-sm btn-primary" value="提交"
+                           onclick="addPlatform()"/>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div th:replace="html/mainfragment :: deleteModal"></div>
+</body>
+<script th:inline="javascript" type="text/javascript">
+
+    $(function () {
+        toastr.options = { // toastr配置
+            "closeButton": false, //是否显示关闭按钮
+            "debug": false, //是否使用debug模式
+            "progressBar": false, //是否显示进度条，当为false时候不显示；当为true时候，显示进度条，当进度条缩短到0时候，消息通知弹窗消失
+            "positionClass": "toast-top-center",//显示的动画时间
+            "showDuration": "300", //显示的动画时间
+            "hideDuration": "100", //消失的动画时间
+            "timeOut": "1000", //展现时间
+            "extendedTimeOut": "1000", //加长展示时间
+            "showEasing": "swing", //显示时的动画缓冲方式
+            "hideEasing": "linear", //消失时的动画缓冲方式
+            "showMethod": "fadeIn", //显示时的动画方式
+            "hideMethod": "fadeOut" //消失时的动画方式
+        }
+    });
+
+
+    $(function () {
+        document.getElementById("collapseThree").className = "collapse show";
+    })
+
+
+    function showAddModel() {
+        $("#excuteID").val("")
+        $("#addModal").modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    function showUpdateModel(obj) {
+        $("#platformName").val(obj.platformName)
+        $("#loginUrl").val(obj.loginUrl)
+        $("#loginParams").val(obj.loginParams)
+        $("#requestType").val(obj.requestType)
+        if (obj.requestType == 1) {
+            $("#bodyTypeParent").css("display", "")
+        } else {
+            $("#bodyTypeParent").css("display", "none")
+        }
+        $("#bodyType").val(obj.bodyType)
+        $("#excuteID").val(obj.id)
+
+        $("#addModal").modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+
+    function openPostType(obj) {
+        if ($(obj).val() == 1) {
+            $("#bodyTypeParent").css("display", "")
+        } else {
+            $("#bodyTypeParent").css("display", "none")
+        }
+    }
+
+
+    function addPlatform(obj) {
+        var platformName = $("#platformName").val();
+        var loginUrl = $("#loginUrl").val();
+        var loginParams = $("#loginParams").val();
+        var requestType = $("#requestType").val();
+        if (platformName == "" || platformName == null) {
+            toastr.warning("请添加平台名称");
+            return
+        }
+        if (loginUrl == "" || loginUrl == null) {
+            toastr.warning("请添加Url");
+            return
+        }
+        if (loginParams == "" || loginParams == null) {
+            toastr.warning("请添加项目登录参数");
+            return
+        }
+
+        var params = "platformName=" + platformName + "&loginUrl=" + loginUrl + "&loginParams=" + loginParams + "&requestType=" + requestType;
+        if (requestType == 1) {
+            bodyType = $("#bodyType").val()
+            params += ("&bodyType=" + bodyType)
+        }
+        var id = "";
+        if ($("#excuteID").val() != "") {
+            id = $("#excuteID").val()
+            params += ("&id=" + id)
+        }
+
+        $.ajax({
+            url: "/ui/addPlatform",
+            type: "post",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#addModal").modal('hide');
+                    location.reload();
+                    toastr.info(data.msg);
+                } else {
+                    toastr.warning(data.msg);
+                }
+            },
+            error: function () {
+                toastr.error("网络错误");
+                $("#addModal").modal('hide');
+            }
+
+        })
+    }
+
+
+    function showDeleteModal(obj) {
+        delObj = obj;
+        var id = $(obj).attr("data-id");
+        $("#deleteID").val(id);
+        $("#deleteModal").modal({
+            backdrop: 'static',
+            keyboard: false
+        })
+    }
+
+
+    function deleteInfo() {
+        id=$("#deleteID").val()
+        var params=("id="+id+"&isDelete=1")
+        $.ajax({
+            url: "/ui/delPlatform",
+            type: "post",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#deleteModal").modal('hide');
+                    location.reload();
+                    toastr.info(data.msg);
+                } else {
+                    toastr.warning(data.msg);
+                }
+            },
+            error: function () {
+                toastr.error("网络错误");
+                $("#addModal").modal('hide');
+            }
+        })
+    }
+
+
+
+    function selectCaseList() {
+        var url = "/ui/getWebPlatformByPage";
+        var platformName = $("#webPlatformName").val()
+        url = url + "?platformName=" + platformName
+        window.location.href = url
+    }
+</script>
+
+<style>
+    table {
+        table-layout: fixed; /* 只有定义了表格的布局算法为fixed，下面td的定义才能起作用。 */
+        margin-top: 15px;
+    }
+
+    .table td {
+        width: 100%;
+        word-break: keep-all; /* 不换行 */
+        white-space: nowrap; /* 不换行 */
+        overflow: hidden; /* 内容超出宽度时隐藏超出部分的内容 */
+        text-overflow: ellipsis; /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+    }
+</style>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="html/mainfragment :: head"></head>
+    <title>角色列表</title>
+    <script type="text/javascript" th:src="@{/js/toastr.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/toastr.min.css}" media="screen">
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<!--修改模块模态框-->
+<div th:fragment="updateAndInsertModal" class="modal fade" id="updateAndInsertModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">修改模块</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <form id="updateOrInsertForm">
+                <div class="modal-body">
+                    <table>
+                        <tr class="th-inner">
+                            <td class="text-right"><span>名称:</span></td>
+                            <td><input class="form-control" id="roleName" type="text" name="roleName"
+                                       style="height:35px;width:300px"
+                                       placeholder=""></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-right">角色代称:</td>
+                            <td><input class="form-control" id="roleCode" type="text" name="roleCode"
+                                       style="height:35px;width:300px"
+                                       placeholder=""></td>
+                        </tr>
+                        <tr class="th-inner">
+                            <td class="text-right">状态:</td>
+                            <td><select class="form-control" id="isDelete" type="text" name="isDelete"
+                                        style="height:35px;width:300px"
+                                        placeholder="">
+                                <option value="0">未删除</option>
+                                <option value="1">删除</option>
+                            </select>
+                            </td>
+                        </tr>
+                        <tr class="th-inner" style="display:none;">
+                            <td><input class="form-control" id="updateAndInsetId" type="text" name="id"
+                                       style="height:35px;width:300px"
+                                       placeholder=""></td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="updateUser()">提交
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--修改模块模态框-->
+<div th:fragment="roleModel" class="modal fade" id="roleModel" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">修改模块</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <form id="updateRoleModel">
+                <div class="modal-body" id="checkboxDivParent" style="display: flex; flex-flow:row wrap;">
+                </div>
+                <div class="th-inner" style="display:none;">
+                    <div><input class="form-control" id="groupRoleId" type="text" name="roleId"
+                                style="height:35px;width:300px"
+                                placeholder=""></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="updateGroup()">提交
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<nav th:replace="html/mainfragment :: deleteModal"></nav>
+<div class="container-fluid">
+    <div>
+        <div class="row">
+            <div class="col-md-2">
+                <nav th:replace="html/mainfragment :: letf_nav"></nav>
+            </div>
+            <div class="col-md-10">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                    <li class="breadcrumb-item "><a>WebUi</a></li>
+                    <li class="breadcrumb-item "><a>report</a></li>
+                    <li class="breadcrumb-item active"><a>list</a></li>
+                </ol>
+                <div>
+                    <button onclick="showUpdateModal()"
+                            class="btn btn-sm btn-info " style="margin-bottom: 10px">新增
+                    </button>
+                </div>
+                <table class="table table-hover table-bordered table-condensed align-middle ">
+                    <thead class="thead-light">
+                    <tr>
+                        <th style="width: 5%">ID</th>
+                        <th>名称</th>
+                        <th>角色代称</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    <tr th:each="role : ${roles}">
+                        <td th:text="${role.id}" style="width: 10%"></td>
+                        <td th:text="${role.roleName}"></td>
+                        <td th:text="${role.roleCode}"></td>
+                        <td th:text="${role.isDelete=='0'?'未删除':'删除'}"></td>
+                        <td style="width: 12%">
+                            <button th:onclick="'javascript:showUpdateModal('+${role.id}+')'"
+                                    class="btn btn-sm btn-info ">修改
+                            </button>
+                            <button th:onclick="'javascript:showEditModal('+${role.id}+')'"
+                                    class="btn btn-sm btn-info ">编辑
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav id="switchPage" aria-label="Page navigation example" th:if="${pageInfo.total}>0">
+                    <ul class="pagination justify-content-center">
+
+                        <li class="page-item"><a class="page-link" id="homePage"
+                                                 th:href="'/user/getRoleByPage'"
+                                                 target="_self">首页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasPreviousPage}==true"><a class="page-link"
+                                                                                           id="previousPage"
+                                                                                           th:href="'/user/getRoleByPage?currentPage='+${pageInfo.prePage}">上一页</a>
+                        </li>
+                        <li class="page-item" th:if="${pageInfo.hasNextPage}==true"><a class="page-link" id="nextPage"
+                                                                                       th:href="'/user/getRoleByPage?currentPage='+${pageInfo.nextPage}">下一页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="lastPage"
+                                                 th:href="'/user/getRoleByPage?currentPage='+${pageInfo.pages}">末页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="currentPage"
+                                                 th:text="第+${pageInfo.pageNum}+页"></a>
+                        </li>
+                        <li class="page-item"><a class="page-link" id="totalPage" th:text="共+${pageInfo.pages}+ 页"> </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        document.getElementById("userManager").className = "collapse show";
+        getAllMenu()
+    })
+
+    function getAllMenu() {
+        $.ajax({
+            type: "get",
+            url: "/user/getAllMenus",
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var menus = data.data;
+                    for (i = 0; i < menus.length; i++) {
+                        $("#checkboxDivParent").append("<div name=\"checkboxDiv\" style=\"padding-right: 20px;\">" +
+                            "<span style=\"padding-right: 3px;\" value='" + menus[i].id + "'>" + menus[i].menuName + "</span><input type='checkbox' name='menuId' value='" + menus[i].id + "'/>" +
+                            "<input style=\"display:none;\" name='id'></input></div>")
+                    }
+
+                } else {
+                    alert("获取信息失败：" + data);
+                }
+
+            },
+            error: function (e) {
+                alert("获取信息失败：" + JSON.stringify(e));
+            }
+        })
+    }
+
+
+    //给确认删除模态框传值
+    function showUpdateModal(id) {
+        document.getElementById("updateOrInsertForm").reset();
+        if (id != null) {
+            $("#updateAndInsetId").val(id);
+            $.ajax({
+                type: "get",
+                url: "/user/getRoleSingle?id=" + id,
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        $("#roleName").val(data.data.roleName)
+                        $("#roleCode").val(data.data.roleCode)
+
+                        var isDelete = $("#isDelete option")
+                        for (i = 0; i < isDelete.length; i++) {
+                            if (isDelete[i].value == data.data.isDelete) {
+                                isDelete[i].selected = true;
+                            }
+                        }
+                    } else {
+                        alert("获取信息失败：" + data);
+                    }
+
+                },
+                error: function (e) {
+                    alert("获取信息失败：" + JSON.stringify(e));
+                }
+            });
+        }
+
+        $("#updateAndInsertModal").modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+
+    /**
+     * 更新删除user
+     */
+    function updateUser() {
+        params = serializeNotNull($("#updateOrInsertForm").serialize())
+        $.ajax({
+            type: "POST",
+            url: "/user/updateRole",
+            dataType: "json",
+            data: params,
+            success: function (data) {
+                if (data.code == 200) {
+                    //隐藏模态框，删除对应的行
+                    $("#deleteModal").modal('hide');
+                    location.reload();
+                } else {
+                    alert("更新或新增失败");
+                }
+
+            },
+            error: function (e) {
+                alert("更新或新增失败");
+            }
+        })
+    }
+
+    function showEditModal(id) {
+        document.getElementById("updateRoleModel").reset()
+        $("#groupRoleId").val(id)
+        $.ajax({
+            type: "get",
+            url: "/user/getAllMenusByRoleId?id=" + id,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    //隐藏模态框，删除对应的行
+                    var menus = data.data;
+                    var arrayMenuNameText = $("[name='checkboxDiv'] span");
+                    for (i = 0; i < menus.length; i++) {
+                        for (j = 0; j < arrayMenuNameText.length; j++) {
+                            if (menus[i].id == jQuery(arrayMenuNameText[j]).attr("value")) {
+                                if(menus[i].isDelete==0){
+                                    $("[name='checkboxDiv'] input[name='menuId']")[j].checked = true
+                                }
+                                $("[name='checkboxDiv'] input[name='id']")[j].value = menus[i].groupId
+                            }
+                        }
+                    }
+                } else {
+                    alert("更新或新增失败");
+                }
+
+            },
+            error: function (e) {
+                alert("更新或新增失败");
+            }
+        })
+        $("#roleModel").modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+
+    function serializeNotNull(serStr) {
+        return serStr.split("&").filter(function (str) {
+            return !str.endsWith("=")
+        }).join("&");
+    }
+
+
+    function updateGroup() {
+        var json = {};
+        var jsonArray = [];
+        var menuIds = $("[name='checkboxDiv'] input[name='menuId']");
+        for (j = 0; j < menuIds.length; j++) {
+            if (menuIds[j].checked) {
+                var newJson = {};
+                newJson.menuId=menuIds[j].value
+                newJson.id=$("[name='checkboxDiv'] input[name='id']")[j].value
+                jsonArray.push(newJson)
+            }
+        }
+        json.roleId=$("#groupRoleId").val()
+        json.params=jsonArray
+        $.ajax({
+            type: "POST",
+            url: "/user/updateOrInsertGroup",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(json),
+            success: function (data) {
+                if (data.code == 200) {
+                    //隐藏模态框，删除对应的行
+                    $("#roleModel").modal('hide');
+                    location.reload();
+                } else {
+                    alert("更新或新增失败");
+                }
+
+            },
+            error: function (e) {
+                alert("更新或新增失败");
+            }
+        })
+    }
+</script>
+</body>
+</html>

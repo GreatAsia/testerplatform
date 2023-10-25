@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/monitor/monitor.js}"></script>
+    <script type="text/javascript" th:src="@{/js/monitor/monitorOnline.js}"></script>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>monitor</a></li>
+                <li class="breadcrumb-item active"><a>online</a></li>
+            </ol>
+
+            <div class="row">
+                &nbsp&nbsp&nbsp&nbsp
+                <div style="font-size:18px" th:text="选择时间"></div>
+                &nbsp&nbsp
+                <select style="height:35px;width:80px" class="form-control " id="weeks">
+                    <option style="font-size:16px" th:value="1">1周</option>
+                    <option style="font-size:16px" th:value="2">2周</option>
+                    <option style="font-size:16px" th:value="3">3周</option>
+                    <option style="font-size:16px" th:value="4">4周</option>
+                    <option style="font-size:16px" th:value="5">5周</option>
+                    <option style="font-size:16px" th:value="6">6周</option>
+                </select>
+                &nbsp&nbsp&nbsp&nbsp
+                <div>
+                    <a href="javascript:void(0)" class="btn  btn-sm btn-info "
+                       onclick="exportHistoryData()">导出</a>
+                </div>
+                &nbsp&nbsp
+
+            </div>
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>ID</th>
+                    <th>TASKID</th>
+                    <th>服务名称</th>
+                    <th>报错类型</th>
+                    <th>时间</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr th:each="alarmHistory: ${alarmHistoryList.getList()}">
+                    <td th:text="${alarmHistory.id}"></td>
+                    <td th:text="${alarmHistory.taskId}"></td>
+                    <td th:text="${alarmHistory.serviceName}"></td>
+                    <td th:text="${alarmHistory.errorType}"></td>
+                    <td th:text="${alarmHistory.time}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <nav th:id="switchPageModel"
+                 th:replace="html/mainfragment :: switchPageInfo(${alarmHistoryList})">
+            </nav>
+
+
+        </div>
+
+
+    </div>
+</div>
+
+
+<script>
+    $("input").css("background", "rgba(255,255,255,0.1)");
+    $("input").css("height", "35px");
+    $("input").css("width", "400");
+    $("input").css("overflow", "auto");
+</script>
+
+
+</body>
+
+
+</html>

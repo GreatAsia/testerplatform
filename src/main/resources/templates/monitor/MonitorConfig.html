@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/monitor/monitor.js}"></script>
+
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>monitor</a></li>
+                <li class="breadcrumb-item active"><a>config</a></li>
+            </ol>
+
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>环境</th>
+                    <th>地址</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="dev_env" th:text="zk"></td>
+                    <td>
+                        <a id="dev_host" href="http://yz-zk.xk12.cn/" target="_blank">http://yz-zk.xk12.cn/</a>
+                    </td>
+                </tr>
+
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+</body>
+
+
+</html>

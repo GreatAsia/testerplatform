@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/monitor/monitor.js}"></script>
+    <script type="text/javascript" th:src="@{/js/monitor/monitorService.js}"></script>
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>monitor</a></li>
+                <li class="breadcrumb-item active"><a>service</a></li>
+            </ol>
+
+            <!-- 按钮触发模态框 -->
+            <a href="javascript:void(0)" class="btn btn-sm btn-primary "
+               onclick="showAddModal(this)">添加服务</a>
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>ID</th>
+                    <th>服务</th>
+                    <th>手机号</th>
+                    <th>测试人员</th>
+                    <th>开发人员</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="alarmPeople: ${alarmPeopleList}">
+                    <td th:text="${alarmPeople.id}"></td>
+                    <td th:text="${alarmPeople.project}"></td>
+                    <td th:text="${alarmPeople.phone}"></td>
+                    <td th:text="${alarmPeople.qa_name}"></td>
+                    <td th:text="${alarmPeople.rd_name}"></td>
+                    <td>
+                        <a href="javascript:void(0)"
+                           th:data-id="${alarmPeople.id}"
+                           th:data-project="${alarmPeople.project}"
+                           th:data-qa="${alarmPeople.qa_name}"
+                           th:data-rd="${alarmPeople.rd_name}"
+                           th:data-phone="${alarmPeople.phone}" class="btn  btn-sm btn-info "
+                           onclick="showUpdateModal(this)">修改</a>
+
+                        <a href="javascript:void(0)" th:data-id="${alarmPeople.id}" class="btn btn-sm btn-danger"
+                           onclick="showDeleteModal(this)">删除</a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+<!--删除模块确认的模态框-->
+<div th:replace="html/mainfragment :: deleteModal">
+</div>
+
+
+<!--添加模态框（Modal）-->
+<div th:fragment="addModal" class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="myModalLabel">
+                    添加服务
+                </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr class="th-inner">
+                        <td class="text-right">项目名称:</td>
+                        <td>
+                            <input class="form-control" id="serviceName" type="text" name="serviceName"
+                                   style="height:35px;width:300px"
+                                   placeholder="">
+                        </td>
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">手机号:</td>
+                        <td><input class="form-control" id="phoneList" type="text" name="phoneList"
+                                   style="height:35px;width:300px"
+                                   placeholder=""></td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">测试人员:</td>
+                        <td><input class="form-control" id="qaName" type="text" name="qaName"
+                                   style="height:35px;width:300px"
+                                   placeholder=""></td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">开发人员:</td>
+                        <td><input class="form-control" id="rdName" type="text" name="rdName"
+                                   style="height:35px;width:300px"
+                                   placeholder=""></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">返回</button>
+                <button type="button" id="addModelID" class="btn btn-sm btn-primary" onclick="addService()">提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<!--更新模块模态框-->
+<div th:fragment="updateModal" class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">修改服务</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr class="th-inner">
+                        <td class="text-right">项目名称:</td>
+                        <td>
+                            <input class="form-control" id="updateServiceName" type="text" name="updateServiceName"
+                                   style="height:35px;width:300px"
+                                   placeholder="">
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">手机号:</td>
+                        <td>
+                            <input class="form-control" id="updatePhoneList" type="text" name="updatePhoneList"
+                                   style="height:35px;width:300px">
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">测试人员:</td>
+                        <td><input class="form-control" id="updateQaName" type="text" name="updateQaName"
+                                   style="height:35px;width:300px"
+                                   placeholder=""></td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">开发人员:</td>
+                        <td><input class="form-control" id="updateRdName" type="text" name="updateRdName"
+                                   style="height:35px;width:300px"
+                                   placeholder=""></td>
+                    </tr>
+                    <tr class="th-inner" style="display:none">
+                        <td class="text-right">模块ID:</td>
+                        <td><input class="form-control" id="updateID" type="text" name="updateID"
+                                   style="height:35px;width:300px" readonly="readonly">
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">返回</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="updateService()">提交</button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $("input").css("background", "rgba(255,255,255,0.1)");
+    $("input").css("height", "35px");
+    $("input").css("width", "400");
+    $("input").css("overflow", "auto");
+</script>
+
+
+</body>
+
+
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="html/mainfragment :: head"></head>
+    <!--<script type="text/javascript" th:src="@{/js/webUI/webUiCaseList.js}"></script>-->
+    <script type="text/javascript" th:src="@{/js/autoui/autoUi.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/webUI/webUiCaseAdd.css}" media="screen">
+    <script type="text/javascript" th:src="@{/js/webUI/webUiCaseAdd.js}"></script>
+    <script type="text/javascript" th:src="@{/js/toastr.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/toastr.min.css}" media="screen">
+</head>
+<body>
+<nav th:replace="html/mainfragment :: navbar"></nav>
+<div class="container-fluid">
+    <!--添加模块的模态框-->
+    <!--<div th:replace="html/mainfragment :: addModalWebUi">
+    </div>-->
+
+
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>ui</a></li>
+                <li class="breadcrumb-item "><a>web</a></li>
+                <li class="breadcrumb-item active"><a>addCase</a></li>
+            </ol>
+            <div class="row" style="margin: 0px">
+                <!-- 按钮触发模态框 -->
+                <div class="col-lg-6">
+                    <button href="javascript:void(0)" class="btn  btn-primary " style="margin-bottom: 10px"
+                            onclick="showAddModel()">添加平台
+                    </button>
+                    &nbsp&nbsp&nbsp&nbsp
+                    <a href="http://wiki.okjiaoyu.cn/pages/viewpage.action?pageId=24652150" target="_blank"
+                       class="text-success" style="margin-top: 10px"><strong>使用说明</strong></a>
+                </div>
+            </div>
+
+            <form id="caseAdd" class="form-horizontal" onsubmit="return addUiCase()">
+                <h5 class="title-line">测试案例添加</h5>
+
+                <div class="form-group row">
+                    <div class="col-sm-1"></div>
+                    <label class="col-sm-1">平台</label>
+                    <div class="col-sm-3 col-lg-3">
+                        <select class=" form-control select" data-valtype="text" name="platformId" id="platformId"
+                                on="addPlatformOptions()" >
+                            <option value="0">请选择</option>
+                            <!--<option value="1">教室空间</option>
+                            <option value="2">学生空间</option>
+                            <option value="3">官网</option>
+                            <option value="4">其他</option>-->
+                        </select>
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <label class="col-sm-1">用例描述</label>
+                    <div class="col-sm-3 col-lg-3">
+                        <input class="form-control" type="text" name="caseDesc" placeholder="例如:登录教师空间等。。。"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-1"></div>
+                    <label class="col-sm-1">url</label>
+                    <div class="col-sm-3 col-lg-3 ">
+                        <input class="form-control" type="text" name="url" placeholder="例如:url"/>
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <label class="col-sm-1">是否需要登录</label>
+                    <div class="col-sm-3 col-lg-3">
+                        <select class=" form-control select" data-valtype="text" name="needLogin" id="needLogin">
+                            <option value="1">是</option>
+                            <option value="2">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="padding-bottom: 3%" name="caseStep">
+                    <div class="form-group row">
+                        <div class="col-sm-1"></div>
+                        <label name="stepName" class="col-sm-1 control-label">步骤1</label>
+                        <div class="input-group col-sm-8">
+                            <div class="input-group-prepend">
+                                <select class=" select form-control " data-valtype="option" name="selectStep"
+                                        id="selectStep">
+                                    <option value="0">选择输入框方式</option>
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" placeholder="操作内容" name="stepContent">
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-1"></div>
+                        <label name="operationName" class="col-sm-1 control-label">操作1</label>
+                        <div class="input-group col-sm-8">
+                            <div class="input-group-prepend" onchange="operationFunc(this)">
+                                <select class=" select form-control " data-valtype="option" name="operationStep"
+                                        id="operationStep">
+                                    <option value="0">输入框操作方式</option>
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" placeholder="当选择不可操作的方式,输入框置灰"
+                                   name="operationContent" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-1"></div>
+                        <label name="assertName" class="col-sm-1 control-label">断言1</label>
+                        <div class="input-group col-sm-8">
+                            <div class="input-group-prepend">
+                                <select class=" select form-control " data-valtype="option" name="assertStep"
+                                        id="assertStep" onchange="changeAssertType(this)">
+                                    <option value="0">断言方式选择</option>
+                                    <!--<option value="1">页面断言</option>-->
+                                </select>
+                                <select class=" select form-control " data-valtype="option" name="assertType"
+                                        id="assertType">
+                                    <option value="0">断言类型方式</option>
+                                    <!--<option value="1">id</option>
+                                    <option value="2">name</option>
+                                    <option value="3">className</option>
+                                    <option value="4">css选择器</option>
+                                    <option value="5">xpath</option>
+                                    <option value="6">linkText</option>-->
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" placeholder="暂时只支持页面断言" name="assertContent">
+                        </div>
+                    </div>
+                </div>
+                <a href="javascript:void(0)"
+                   style="cursor:pointer;  margin-left: 70%" onclick="addStep()">>>>>增加一条<<<<</a>
+                <a href="javascript:void(0)" class="btn  btn-primary " onclick="removeLastStep()">删除一条</a>
+                <button type="submit" class="btn  btn-primary ">提交</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+
+</div>
+
+
+<div th:fragment="addModal" class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="myModalLabel">
+                    添加平台模块
+                </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <table>
+                    <tr class="th-inner">
+                        <td class="text-right">平台名称:</td>
+                        <td><input class="form-control" id="platformName" type="text" name="platformName"
+                                   style="height:35px;width:300px"
+                                   placeholder="例如：教师空间_dev"></td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">登录url:</td>
+                        <td><input class="form-control" id="loginUrl" type="text" name="loginUrl"
+                                   style="height:35px;width:300px"
+                                   placeholder="一定要url地址">
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">登录参数:</td>
+                        <td><input class="form-control" id="loginParams" type="text" name="loginParams"
+                                   style="height:35px;width:300px"
+                                   placeholder="json格式进行保存，否则无法登录">
+                        </td>
+                    </tr>
+                    <tr class="th-inner">
+                        <td class="text-right">请求类型:</td>
+                        <td><select class="form-control" id="requestType" type="text" name="requestType"
+                                    style="height:35px;width:300px"
+                                    placeholder="" onchange="openPostType(this)">
+                            <option value="1">get</option>
+                            <option value="2">post</option>
+                        </select>
+                        </td>
+                    </tr>
+                    <tr class="th-inner" id="bodyTypeParent" style="display: none">
+                        <td class="text-right">post方式:</td>
+                        <td><select class="form-control" id="bodyType" type="text" name="bodyType"
+                                    style="height:35px;width:300px"
+                                    placeholder="">
+                            <option value="0">form</option>
+                            <option value="1">json(raw)</option>
+                        </select>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">返回</button>
+                    <input type="submit" id="addModelID" class="btn btn-sm btn-primary" value="提交"
+                           onclick="addPlatform()"/>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>

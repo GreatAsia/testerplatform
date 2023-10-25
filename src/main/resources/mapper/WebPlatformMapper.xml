@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.webUi.WebPlatformMapper">
+    <resultMap id="BaseResultMap" type="com.okay.testcenter.domain.ui.WebPlatform">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="platform_name" jdbcType="VARCHAR" property="platformName"/>
+        <result column="login_url" jdbcType="VARCHAR" property="loginUrl"/>
+        <result column="login_params" jdbcType="VARCHAR" property="loginParams"/>
+        <result column="request_type" jdbcType="VARCHAR" property="requestType"/>
+        <result column="body_type" jdbcType="INTEGER" property="bodyType"/>
+        <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
+    </resultMap>
+    <sql id="Base_WebCase_Column_List">
+        id,platform_name,login_url,login_params,request_type,body_type,is_delete
+    </sql>
+
+    <insert id="addWebPlatform" parameterType="com.okay.testcenter.domain.ui.WebPlatform" keyColumn="id"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into web_platform
+        (platform_name,login_url,login_params,request_type,body_type) values
+        (#{platformName},#{loginUrl},#{loginParams},#{requestType},#{bodyType})
+    </insert>
+
+    <update id="updateWebPlatform" parameterType="com.okay.testcenter.domain.ui.WebPlatform">
+        update web_platform set id=#{id}
+        <if test="platformName!=null and platformName!=''">
+            , platform_name=#{platformName}
+        </if>
+        <if test="loginUrl!=null and loginUrl!=''">
+            , login_url=#{loginUrl}
+        </if>
+        <if test="loginParams!=null and loginParams!=''">
+            , login_params=#{loginParams}
+        </if>
+        <if test="requestType!=null and requestType!=''">
+            , request_type=#{requestType}
+        </if>
+        <if test="bodyType!=null and bodyType!=''">
+            , body_type=#{bodyType}
+        </if>
+        <if test="isDelete!=null and isDelete!=''">
+            , is_delete=#{isDelete}
+        </if>
+        where id=#{id}
+    </update>
+
+    <select id="getPlatformList" parameterType="com.okay.testcenter.domain.ui.WebPlatform" resultMap="BaseResultMap">
+        select
+        <include refid="Base_WebCase_Column_List"/>
+        from web_platform where 1=1
+        <if test="id!=null and id!=''">
+            and id=#{id}
+        </if>
+        <if test="platformName!=null and platformName!=''">
+            and platform_name=#{platformName}
+        </if>
+        <if test="loginUrl!=null and loginUrl!=''">
+            and login_url=#{loginUrl}
+        </if>
+        <if test="loginParams!=null and loginParams!=''">
+            and login_params=#{loginParams}
+        </if>
+        <if test="requestType!=null and requestType!=''">
+            and request_type=#{requestType}
+        </if>
+        <if test="bodyType!=null and bodyType!=''">
+            and body_type=#{bodyType}
+        </if>
+        <if test="isDelete!=null and isDelete!=''">
+            and is_delete=#{isDelete}
+        </if>
+        order by id desc
+    </select>
+</mapper>

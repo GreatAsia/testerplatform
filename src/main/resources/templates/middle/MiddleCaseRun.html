@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/middle/middle.js}"></script>
+    <script type="text/javascript" th:src="@{/js/middle/middleCaseRun.js}"></script>
+</head>
+<body>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item "><a>middle</a></li>
+                <li class="breadcrumb-item active"><a>case</a></li>
+                <li class="breadcrumb-item active"><a>run</a></li>
+            </ol>
+
+            <!-- 按钮触发模态框 -->
+            <div>
+                <label class="form-inline"><font size="4"></font>
+                运行用例
+                </label>
+            </div>
+            <div>
+                <label class="form-inline"><font size="4"></font>
+                    <select style="height:35px;width:400px" class="form-control " id="SelectMiddleCaseEnv">
+                        <option th:each="list:${envList}" th:value="${list.id}"
+                                th:text="${list.name }"></option>
+                    </select>
+                </label>
+            </div>
+
+            <div>
+                <label class="form-inline"><font size="4"></font>
+                    <select style="height:35px;width:400px" class="form-control " id="middleCaseType">
+                        <option th:value="-1">全部</option>
+                        <option th:value="0">监控</option>
+                        <option th:value="1">手动</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="row">
+                <label class="form-inline">&nbsp&nbsp&nbsp<font size="4"></font>
+                    <select style="height:35px;width:400px" title="请选择项目" class="form-control" id="projectCaseName"
+                            onchange="switchListProject()">
+                        <option th:each="list:${middleProjectList}" th:value="${list.id}"
+                                th:text="${list.name }">
+                        </option>
+                    </select>
+                </label>
+                    &nbsp&nbsp
+                <label class="form-inline"><font size="4"></font>
+                    <div>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-success "
+                           onclick="runProject()">运行项目</a>
+                    </div>
+                </label>
+            </div>
+
+            <div class="row">
+
+                <label class="form-inline">&nbsp&nbsp&nbsp<font size="4"></font>
+                    <select style="height:35px;width:400px" title="请选择模块" class="form-control" id="moduleCaseName"
+                            onchange="switchListModule()">
+                        <option th:each="list:${moduleList}" th:value="${list.id}"
+                                th:text="${list.name }">
+                    </select>
+
+                    &nbsp&nbsp
+                    <div>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-success "
+                           onclick="runModule()">运行模块</a>
+                    </div>
+                </label>
+            </div>
+
+            <div class="row">
+                <label class="form-inline">&nbsp&nbsp&nbsp<font size="4"></font>
+                    <select style="height:35px;width:400px" title="请选择接口" class="form-control" id="interfaceCaseName">
+                        <option th:each="list:${interfaceList}" th:value="${list.id}"
+                                th:text="${list.name }">
+                    </select>
+
+                    &nbsp&nbsp
+                    <div>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-success "
+                           onclick="runInterface()">运行接口</a>
+                    </div>
+                </label>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+<!--运行用例结果的模态框-->
+<div class="modal fade" id="runCase" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">运行结果</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body" style="float:left;width:100%;">
+                <td>
+                    <input class="form-control" id="result" type="text" placeholder="" readonly="readonly">
+                </td>
+                <textarea style="width:400px;" type="text" rows="10" th:width="10" th:text="运行中..." readonly="readonly"
+                          id="response"></textarea>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-sm btn-primary" data-dismiss="modal">关闭</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $("input").css("background", "rgba(255,255,255,0.1)");
+    $("input").css("height", "35px");
+    $("input").css("width", "400");
+    $("input").css("overflow", "auto");
+</script>
+
+</body>
+
+
+</html>

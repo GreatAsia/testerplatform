@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.webUi.WebUiAssertTypeMapper">
+    <resultMap id="BaseResultMap" type="com.okay.testcenter.domain.ui.AssertType">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="is_delete" jdbcType="CHAR" property="isDelete"/>
+    </resultMap>
+    <sql id="Base_WebCase_Column_List">
+    id,name ,is_delete
+  </sql>
+
+
+    <select id="getAssertTypeList" resultType="com.okay.testcenter.domain.ui.AssertType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_WebCase_Column_List"/>
+        from web_assert_type
+        where 1 = 1
+        <if test="id != null and id !=''">
+            and id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="name != null and name !=''">
+            and name = #{name,jdbcType=INTEGER}
+        </if>
+        <if test="isDelete != null and isDelete !=''">
+            and is_delete = #{isDelete,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="getAssertTypeById" resultType="com.okay.testcenter.domain.ui.AssertType">
+        select
+        <include refid="Base_WebCase_Column_List"/>
+        from web_assert_type
+        where 1 = 1
+        <if test="id != null and id !=''">
+            and id = #{id,jdbcType=INTEGER}
+        </if>
+    </select>
+</mapper>

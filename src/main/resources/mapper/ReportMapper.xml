@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.performance.ReportMapper">
+
+
+    <!--<insertReport >-->
+    <insert id="insertReport" parameterType="com.okay.testcenter.domain.report.PerformanceHistory">
+      INSERT INTO performance_history(ID,RUNID,NAME,TYPE,SERIALNO,PRESIZE,UNIT,RESULT,RUNTIME,totalTime,version)
+      values (#{id},#{runId},#{name},#{type},#{serialno},#{preSize},#{unit},#{result},#{runTime},#{totalTime},#{version})
+    </insert>
+
+
+    <insert id="insertReports" parameterType="java.util.List" >
+        INSERT INTO performance_history(runId,name,type,serialno,preSize,unit,result,runTime,totalTime,version) values
+        <foreach collection="list"  item="performance_history" index="index" separator=",">
+            (#{performance_history.runId},#{performance_history.name},#{performance_history.type},
+            #{performance_history.serialno},#{performance_history.preSize},
+            #{performance_history.unit},#{performance_history.result},
+            #{performance_history.runTime},#{performance_history.totalTime},#{performance_history.version} )
+        </foreach>
+    </insert>
+
+    <!--<updateReport>-->
+    <update id="updateReport" parameterType="com.okay.testcenter.domain.report.PerformanceHistory">
+        UPDATE performance_history
+        SET NAME=#{name},TYPE=#{type},RUNID=#{runId},SERIALNO=#{serialno},PRESIZE=#{preSize},UNIT=#{unit},RESULT=#{result},RUNTIME=#{runTime},totalTime=#{totalTime},version=#{version}
+        WHERE ID=#{id}
+    </update>
+
+    <!--<deleteReport>-->
+    <delete id="deleteReport" parameterType="int">
+        DELETE FROM performance_history
+        WHERE ID=#{0}
+    </delete>
+
+    <!--<findReport>-->
+    <select id="findReport" parameterType="int" resultType="com.okay.testcenter.domain.report.PerformanceHistory">
+        SELECT ID,RUNID,NAME,TYPE,SERIALNO,PRESIZE,UNIT,RESULT,RUNTIME,totalTime,version
+        from performance_history
+        WHERE ID=#{0}
+    </select>
+
+    <!--<findReportByRunId>-->
+    <select id="findReportByRunId" parameterType="int"
+            resultType="com.okay.testcenter.domain.report.PerformanceHistory">
+        SELECT ID,RUNID,NAME,TYPE,SERIALNO,PRESIZE,UNIT,RESULT,RUNTIME,totalTime,version
+        from performance_history
+        WHERE RUNID=#{0}
+    </select>
+
+    <!--<getLastRunId>-->
+    <select id="getLastRunId" parameterType="Integer" resultType="java.lang.Integer">
+        SELECT RUNID
+        from performance_history
+        ORDER BY runId DESC LIMIT 1
+    </select>
+
+    <!--<findRunIdList>-->
+    <select id="findRunIdList" parameterType="com.okay.testcenter.domain.report.PerformanceHistory"
+            resultType="com.okay.testcenter.domain.report.PerformanceHistory">
+        SELECT RUNID,NAME,TYPE,SERIALNO,RESULT,RUNTIME,totalTime,version
+        from performance_history
+        GROUP BY runId ORDER BY runId DESC
+    </select>
+
+
+    <!--<findSerialnoList>-->
+    <select id="findSerialnoList" parameterType="int" resultType="com.okay.testcenter.domain.report.PerformanceHistory">
+        SELECT DISTINCT SERIALNO
+        from performance_history
+        ORDER BY id DESC
+    </select>
+
+    <!--<findReportBySerialno>-->
+    <select id="findReportBySerialno" parameterType="string"
+            resultType="com.okay.testcenter.domain.report.PerformanceHistory">
+        SELECT RUNID,NAME,TYPE,SERIALNO,RESULT,RUNTIME,totalTime,version
+        from performance_history
+        WHERE serialno like #{0}
+        GROUP BY runId ORDER BY runId DESC
+    </select>
+
+    <!--<deleteReportBySerialno>-->
+    <select id="deleteReportBySerialno" parameterType="string"
+            resultType="com.okay.testcenter.domain.report.PerformanceHistory">
+        DELETE FROM performance_history
+        WHERE serialno like #{0}
+    </select>
+
+
+    <!--<sreachSerialno>-->
+    <select id="sreachSerialno" parameterType="string"
+            resultType="com.okay.testcenter.domain.report.PerformanceHistory">
+        SELECT SERIALNO
+        FROM performance_history
+        WHERE serialno like #{0} GROUP BY serialno
+    </select>
+
+    <!--<getTotal>-->
+    <select id="getTotal" parameterType="string"
+            resultType="int">
+        SELECT ID
+        FROM performance_history
+        Order by id  desc LIMIT 1
+    </select>
+
+
+
+</mapper>

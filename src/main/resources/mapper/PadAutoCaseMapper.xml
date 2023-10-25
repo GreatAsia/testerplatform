@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okay.testcenter.mapper.ui.PadAutoCaseMapper">
+
+
+    <!--<insertCase >-->
+    <insert id="insertCase" parameterType="com.okay.testcenter.domain.ui.PadAutoCase">
+      INSERT INTO pad_autocase(ID,CASENAME,CASEDESC,CASECONTENT)
+      values (#{id},#{caseName},#{caseDesc},#{caseContent})
+    </insert>
+
+    <!--<updateCase>-->
+    <update id="updateCase" parameterType="com.okay.testcenter.domain.ui.PadAutoCase">
+        UPDATE pad_autocase
+        SET CASENAME=#{caseName},CASEDESC=#{caseDesc},CASECONTENT=#{caseContent}
+        WHERE ID=#{id}
+    </update>
+
+    <!--<deleteCase>-->
+    <delete id="deleteCase" parameterType="int">
+        DELETE FROM pad_autocase
+        WHERE ID=#{0}
+    </delete>
+
+    <!--<findCaseById>-->
+    <select id="findCaseById" parameterType="int" resultType="com.okay.testcenter.domain.ui.PadAutoCase">
+        SELECT ID,CASENAME,CASEDESC,CASECONTENT
+        from pad_autocase
+        WHERE ID=#{0}
+    </select>
+
+    <!--<findCaseByName>-->
+    <select id="findCaseByName" parameterType="string" resultType="com.okay.testcenter.domain.ui.PadAutoCase">
+        SELECT ID,CASENAME,CASEDESC,CASECONTENT
+        from pad_autocase
+        WHERE caseContent like CONCAT('%',#{0},'%')
+    </select>
+
+
+    <!--<findCaseList>-->
+    <select id="findCaseList" parameterType="com.okay.testcenter.domain.ui.PadAutoCase"
+            resultType="com.okay.testcenter.domain.ui.PadAutoCase">
+        SELECT ID,CASENAME,CASEDESC,CASECONTENT
+        from pad_autocase
+    </select>
+
+
+</mapper>

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="html/mainfragment :: head"></head>
+    <script type="text/javascript" th:src="@{/js/performance/performance.js}"></script>
+    <script type="text/javascript" th:src="@{/js/performance/serialnoinfo.js}"></script>
+</head>
+<body>
+
+<nav th:replace="html/mainfragment :: navbar"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <nav th:replace="html/mainfragment :: letf_nav"></nav>
+        </div>
+
+        <div id="reportlist" class="col-md-10">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/api/home">home</a></li>
+                <li class="breadcrumb-item"><a href="/performance/pad/serialno/list">seriallist</a></li>
+                <li class="breadcrumb-item active"><a>serialinfo</a></li>
+            </ol>
+
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered table-condensed ">
+                <thead class="thead-light">
+                <tr>
+                    <th>运行ID</th>
+                    <th>序列号</th>
+                    <th>产品</th>
+                    <th>类型</th>
+                    <th>总时间</th>
+                    <th>开始时间</th>
+                    <th>参考结果</th>
+                    <th>报告</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr th:each="report: ${serialnoInfo.list}">
+                    <td th:text="${report.runId}"></td>
+                    <td th:text="${report.serialno}"></td>
+                    <td th:text="${report.name}"></td>
+                    <td th:text="${report.type}"></td>
+                    <td th:text="${report.totalTime}"></td>
+                    <td th:text="${report.runTime}"></td>
+                    <td style="font-weight:bold" th:class="${report.result eq ('FAIL')} ?  'text-danger' : 'text-success'"
+                        th:text="${report.result}"></td>
+
+                    <td>
+                        <a th:href="@{'/performance/pad/reportDetail/' + ${report.runId}} ">查看报告</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <nav th:id="switchPageModel"
+                 th:replace="html/mainfragment :: switchPageInfo(${serialnoInfo})">
+            </nav>
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+
+</html>
